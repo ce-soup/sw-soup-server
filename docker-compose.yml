@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  soup:
+    build:
+      dockerfile: Dockerfile.dev
+      context: .
+    ports:
+      - "3000:3000"
+    networks:
+      - soup
+
+  database:
+    image: postgres
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      - TZ=Asia/Seoul
+    env_file:
+      - ./env/.env
+    ports:
+      - "5432:5432"
+    networks:
+      - soup
+
+  redis:
+    image: redis
+    volumes:
+      - ./data/redis:/data
+    env_file:
+      - ./env/.env
+    ports:
+      - "6379:6379"
+    networks:
+      - soup
+
+networks:
+  soup:
+    labels:
+      - soup
