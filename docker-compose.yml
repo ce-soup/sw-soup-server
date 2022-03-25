@@ -1,15 +1,6 @@
 version: "3"
 
 services:
-  soup:
-    build:
-      dockerfile: Dockerfile.dev
-      context: .
-    ports:
-      - "3000:3000"
-    networks:
-      - soup
-
   database:
     image: postgres
     volumes:
