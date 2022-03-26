@@ -20,8 +20,8 @@ jobs:
 
       - name: 3. Testing
         run: |
-          yarn test
-          yarn test:e2e
+          yarn test --passWithNoTests
+          yarn test:e2e --passWithNoTests
 
       - name: 4. Nest JS Build
         run: yarn build
