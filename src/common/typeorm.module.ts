@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 
-import { SoupConfig } from '@/config/config.module';
+import { SoupConfig } from '@/common/config.module';
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 

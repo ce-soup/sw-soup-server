@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CustomConfigModule } from '@/config/config.module';
-import { CustomTypeOrmModuleOptions, EnvironmentType } from '@/config/typeorm.module';
+import { CustomConfigModule } from '@/common/config.module';
+import { CustomTypeOrmModuleOptions, EnvironmentType } from '@/common/typeorm.module';
 
 @Module({
   imports: [
@@ -11,5 +11,3 @@ import { CustomTypeOrmModuleOptions, EnvironmentType } from '@/config/typeorm.mo
   ],
 })
 export class AppModule {}
-
-console.log(process.env.NODE_ENV);
