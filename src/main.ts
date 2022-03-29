@@ -16,7 +16,7 @@ async function bootstrap() {
     options: {
       url: `localhost:${+(process.env.GRPC_PORT ?? '5000')}`,
       package: 'soup',
-      protoPath: [join(protoDir, 'soup/v1/member.proto')],
+      protoPath: [join(protoDir, 'member.proto')],
       loader: {
         longs: Number,
         defaults: true,
@@ -26,6 +26,7 @@ async function bootstrap() {
 
   eurekaClientStart();
 
+  await app.startAllMicroservices();
   await app.listen(+(process.env.APP_PORT ?? '3000'));
 }
 

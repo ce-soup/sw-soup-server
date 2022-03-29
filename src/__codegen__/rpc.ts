@@ -1,16 +1,16 @@
 export const enum SexEnum {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
+  Male = "Male",
+  Female = "Female",
 }
 
 export const encodeSexEnum: { [key: string]: number } = {
-  MALE: 0,
-  FEMALE: 1,
+  Male: 0,
+  Female: 1,
 };
 
 export const decodeSexEnum: { [key: number]: SexEnum } = {
-  0: SexEnum.MALE,
-  1: SexEnum.FEMALE,
+  0: SexEnum.Male,
+  1: SexEnum.Female,
 };
 
 export interface MemberRes {

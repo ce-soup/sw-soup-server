@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package member;
+package soup;
 
 service MemberService {
-  rpc createMember(CreateMemberReq) returns (MemberRes) {}
+  rpc CreateMember(CreateMemberReq) returns (MemberRes) {}
 }
 
 message MemberRes {
@@ -11,8 +11,8 @@ message MemberRes {
 }
 
 enum SexEnum {
-  MALE = 0;
-  FEMALE = 1;
+  Male = 0;
+  Female = 1;
 }
 
 message CreateMemberReq {
