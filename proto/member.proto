@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package member;
+
+service MemberService {
+  rpc createMember(CreateMemberReq) returns (MemberRes) {}
+}
+
+message MemberRes {
+  string memberId = 1;
+}
+
+enum SexEnum {
+  MALE = 0;
+  FEMALE = 1;
+}
+
+message CreateMemberReq {
+  string name = 1;
+  SexEnum sex = 2;
+}

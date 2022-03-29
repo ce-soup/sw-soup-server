@@ -23,6 +23,9 @@ export interface SoupConfig {
   // Redis
   REDIS_HOST: string;
   REDIS_PORT: number;
+
+  // Grpc
+  GRPC_PORT: number;
 }
 
 const validationSchema = Joi.object({
@@ -43,6 +46,9 @@ const validationSchema = Joi.object({
   // Redis
   REDIS_HOST: Joi.string().required(),
   REDIS_PORT: Joi.number().default(6379),
+
+  // Grpc
+  GRPC_PORT: Joi.number().default(5000),
 });
 
 export const CustomConfigModule = ConfigModule.forRoot({
