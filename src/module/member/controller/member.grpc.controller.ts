@@ -11,7 +11,6 @@ export class MemberGrpcController {
 
   @GrpcMethod('MemberService', 'CreateMember')
   async createMember({ name, sex }: CreateMemberReq): Promise<MemberRes> {
-    console.log(name, sex);
     return await this.memberService.createMember(CreateMemberRequest.of({ name, sex: decodeSexEnum[sex] }));
   }
 }
