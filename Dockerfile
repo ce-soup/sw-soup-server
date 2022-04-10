@@ -1,10 +1,11 @@
-FROM node:16
-
+FROM node:16 AS builder
 WORKDIR /app
-
 COPY . .
-
 RUN yarn install
 RUN yarn build
 
-CMD ["node", "dist/main.js"]
+FROM node:16-alpine
+WORKDIR /app
+COPY --from=builder /app ./
+
+CMD ["yarn", "start:prod"]
