@@ -14,7 +14,7 @@ async function bootstrap() {
   app.connectMicroservice<GrpcOptions>({
     transport: Transport.GRPC,
     options: {
-      url: `localhost:${+(process.env.GRPC_PORT ?? '5000')}`,
+      url: `${process.env.NODE_ENV === 'production' ? 'soup' : 'localhost'}:${+(process.env.GRPC_PORT ?? '5000')}`,
       package: 'soup',
       protoPath: [join(protoDir, 'member.proto')],
       loader: {
@@ -23,6 +23,11 @@ async function bootstrap() {
       },
     },
   });
+  console.info(
+    `[gRPC] registered : ${process.env.NODE_ENV === 'production' ? 'soup' : 'localhost'}:${+(
+      process.env.GRPC_PORT ?? '5000'
+    )}`,
+  );
 
   eurekaClientStart();
 
