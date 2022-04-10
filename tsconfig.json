@@ -17,6 +17,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "allowJs": true,
     "paths": {
       "@/*": [
         "src/*"
@@ -25,5 +26,9 @@
         "test/*"
       ]
     }
-  }
+  },
+  "include": [
+    "src",
+    "test"
+  ]
 }

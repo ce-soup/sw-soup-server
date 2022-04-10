@@ -25,6 +25,9 @@ export interface SoupConfig {
   REDIS_HOST: string;
   REDIS_PORT: number;
 
+  // Grpc
+  GRPC_PORT: number;
+
   // Eureka
   EUREKA_HOST: string;
   EUREKA_PORT: string;
@@ -48,6 +51,9 @@ const validationSchema = Joi.object({
   // Redis
   REDIS_HOST: Joi.string().required(),
   REDIS_PORT: Joi.number().default(6379),
+
+  // Grpc
+  GRPC_PORT: Joi.number().default(5000),
 
   // Eureka
   EUREKA_HOST: Joi.string().default('localhost'),
