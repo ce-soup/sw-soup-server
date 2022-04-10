@@ -1,6 +1,10 @@
 name: Testing
 
-on: push
+on:
+  push:
+    branches-ignore:
+      - main
+      - develop
 
 jobs:
   test_and_build:
@@ -9,20 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: 1. Node JS Setup
+      - name: 1. set up node.js
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
           cache: 'yarn'
 
-      - name: 2. Install Dependences
+      - name: 2. install dependences
         run: yarn install
 
-      - name: 3. Testing
+      - name: 3. testing
         run: |
           yarn test --passWithNoTests
           yarn test:e2e --passWithNoTests
 
-      - name: 4. Nest JS Build
+      - name: 4. nest.js build
         run: yarn build
-

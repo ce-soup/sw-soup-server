@@ -1,5 +1,6 @@
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import * as process from 'process';
 
 /**
  * @author himit0131@gmail.com
@@ -26,6 +27,10 @@ export interface SoupConfig {
 
   // Grpc
   GRPC_PORT: number;
+
+  // Eureka
+  EUREKA_HOST: string;
+  EUREKA_PORT: string;
 }
 
 const validationSchema = Joi.object({
@@ -39,7 +44,7 @@ const validationSchema = Joi.object({
   POSTGRES_HOST: Joi.string().required(),
   POSTGRES_PORT: Joi.number().default(5432),
   POSTGRES_DB: Joi.string().required(),
-  POSTGRES_TEST_DB: Joi.string().required(),
+  POSTGRES_TEST_DB: Joi.string().default('test_db'),
   POSTGRES_USER: Joi.string().required(),
   POSTGRES_PASSWORD: Joi.string().required(),
 
@@ -49,10 +54,15 @@ const validationSchema = Joi.object({
 
   // Grpc
   GRPC_PORT: Joi.number().default(5000),
+
+  // Eureka
+  EUREKA_HOST: Joi.string().default('localhost'),
+  EUREKA_PORT: Joi.number().default(8761),
 });
 
 export const CustomConfigModule = ConfigModule.forRoot({
   isGlobal: true,
+  ignoreEnvFile: process.env.NODE_ENV === 'production',
   envFilePath: ['env/.env'],
   validationSchema,
 });

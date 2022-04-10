@@ -26,7 +26,7 @@ export const CustomTypeOrmModuleOptions = (
         : configService.get<string>('POSTGRES_TEST_DB'),
     namingStrategy: new SnakeNamingStrategy(),
     autoLoadEntities: true,
-    synchronize: environmentType !== EnvironmentType.Production,
+    synchronize: true,
     logging: environmentType !== EnvironmentType.Production,
     dropSchema: environmentType === EnvironmentType.Test,
   }),
