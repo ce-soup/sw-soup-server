@@ -5,7 +5,8 @@ const EurekaClient = (servicePort: number) =>
   new Eureka({
     instance: {
       app: 'soup-service-server',
-      hostName: 'service-server-instance',
+      hostName: process.env.NODE_ENV === 'production' ? 'soup' : 'localhost',
+      instanceId: 'service-server-instance',
       ipAddr: process.env.NODE_ENV === 'production' ? 'soup' : 'localhost',
       port: {
         $: servicePort,
@@ -24,6 +25,8 @@ const EurekaClient = (servicePort: number) =>
     eureka: {
       host: process.env.EUREKA_HOST,
       port: +process.env.EUREKA_PORT,
+      fetchRegistry: true,
+      registerWithEureka: true,
       servicePath: '/eureka/apps/',
       maxRetries: 10,
       requestRetryDelay: 1000,
