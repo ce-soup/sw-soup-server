@@ -6,21 +6,21 @@ const EurekaClient = (servicePort: number) =>
     instance: {
       app: 'soup-service-server',
       hostName: 'service-server-instance',
-      ipAddr: 'localhost',
+      ipAddr: process.env.NODE_ENV === 'production' ? 'soup' : 'localhost',
       port: {
         $: servicePort,
         '@enabled': true,
       },
       vipAddress: 'soup-service-server',
-      statusPageUrl: `http://localhost:${servicePort}`,
+      statusPageUrl: process.env.NODE_ENV === 'production' ? `soup:${servicePort}` : `http://localhost:${servicePort}`,
       dataCenterInfo: {
         name: 'MyOwn',
         '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
       },
     },
     eureka: {
-      host: 'localhost',
-      port: 8761,
+      host: process.env.EUREKA_HOST,
+      port: +process.env.EUREKA_PORT,
       servicePath: '/eureka/apps/',
       maxRetries: 10,
       requestRetryDelay: 1000,

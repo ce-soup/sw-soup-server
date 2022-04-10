@@ -24,6 +24,10 @@ export interface SoupConfig {
   // Redis
   REDIS_HOST: string;
   REDIS_PORT: number;
+
+  // Eureka
+  EUREKA_HOST: string;
+  EUREKA_PORT: string;
 }
 
 const validationSchema = Joi.object({
@@ -44,6 +48,10 @@ const validationSchema = Joi.object({
   // Redis
   REDIS_HOST: Joi.string().required(),
   REDIS_PORT: Joi.number().default(6379),
+
+  // Eureka
+  EUREKA_HOST: Joi.string().default('localhost'),
+  EUREKA_PORT: Joi.number().default(8761),
 });
 
 export const CustomConfigModule = ConfigModule.forRoot({

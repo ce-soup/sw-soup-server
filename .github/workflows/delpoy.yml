@@ -10,7 +10,8 @@ env:
   VERSION: ${{ github.sha }}
   DOCKER_NAME: soup
   SERVER_PORT: 8080
-  SW_EUREKA_URL: http://133.186.144.24:8761/eureka
+  EUREKA_HOST: 133.186.144.24
+  EUREKA_PORT: 8761
 
 jobs:
   build:
@@ -86,4 +87,6 @@ jobs:
           -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
           -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
           -e GRPC_PORT=${{ secrets.GRPC_PORT }} \
+          -e EUREKA_HOST=${{ env.EUREKA_HOST }} \
+          -e EUREKA_PORT=${{ env.EUREKA_PORT }} \
           ${{ env.DOCKER_IMAGE }}:latest
