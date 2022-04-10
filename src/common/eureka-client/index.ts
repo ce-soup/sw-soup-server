@@ -12,7 +12,10 @@ const EurekaClient = (servicePort: number) =>
         '@enabled': true,
       },
       vipAddress: 'soup-service-server',
-      statusPageUrl: process.env.NODE_ENV === 'production' ? `soup:${servicePort}` : `http://localhost:${servicePort}`,
+      statusPageUrl:
+        process.env.NODE_ENV === 'production'
+          ? `${process.env.EUREKA_HOST}:${servicePort}`
+          : `http://localhost:${servicePort}`,
       dataCenterInfo: {
         name: 'MyOwn',
         '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
