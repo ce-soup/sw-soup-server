@@ -23,11 +23,6 @@ async function bootstrap() {
       },
     },
   });
-  console.info(
-    `[gRPC] registered : ${process.env.NODE_ENV === 'production' ? 'soup' : 'localhost'}:${+(
-      process.env.GRPC_PORT ?? '5000'
-    )}`,
-  );
 
   eurekaClientStart();
 
