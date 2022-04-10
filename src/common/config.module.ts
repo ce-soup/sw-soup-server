@@ -1,5 +1,6 @@
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import * as process from 'process';
 
 /**
  * @author himit0131@gmail.com
@@ -47,6 +48,7 @@ const validationSchema = Joi.object({
 
 export const CustomConfigModule = ConfigModule.forRoot({
   isGlobal: true,
+  ignoreEnvFile: process.env.NODE_ENV === 'production',
   envFilePath: ['env/.env'],
   validationSchema,
 });
