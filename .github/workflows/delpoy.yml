@@ -11,7 +11,6 @@ env:
   DOCKER_NAME: soup
   SERVER_PORT: 8080
   SW_EUREKA_URL: http://133.186.144.24:8761/eureka
-  CE_EUREKA_URL: http://133.186.215.107:8761/eureka
 
 jobs:
   build:
@@ -74,4 +73,15 @@ jobs:
       - name: 2. docker run
         run: |
           /home/soup/commands/remove_docker_container.sh ${{ env.DOCKER_NAME }} ${{ env.DOCKER_IMAGE }}:latest
-          docker run -d -p ${{ env.SERVER_PORT }}:${{ env.SERVER_PORT }} --name ${{ env.DOCKER_NAME }} --restart always -e APP_PORT=${{ env.SERVER_PORT }} -e POSTGRES_HOST=${{ secrets.DATABASE_HOST }} -e POSTGRES_PORT=${{ secrets.DATABASE_PORT }} -e POSTGRES_DB=${{ secrets.DATABASE_DB }} -e POSTGRES_USER=${{ secrets.DATABASE_USER }} -e POSTGRES_PASSWORD=${{ secrets.DATABASE_PASSWORD }} -e REDIS_HOST=${{ secrets.REDIS_HOST }} REDIS_PORT=${{ secrets.REDIS_PORT }} -e GRPC_PORT=${{ secrets.GRPC_PORT }} ${{ env.DOCKER_IMAGE }}:latest
+          docker run -d -p ${{ env.SERVER_PORT }}:${{ env.SERVER_PORT }} \
+          --name ${{ env.DOCKER_NAME }} \
+          --restart always -e APP_PORT=${{ env.SERVER_PORT }} \
+          -e POSTGRES_HOST=${{ secrets.DATABASE_HOST }} \
+          -e POSTGRES_PORT=${{ secrets.DATABASE_PORT }} \
+          -e POSTGRES_DB=${{ secrets.DATABASE_DB }} \
+          -e POSTGRES_USER=${{ secrets.DATABASE_USER }} \
+          -e POSTGRES_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
+          -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
+          -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
+          -e GRPC_PORT=${{ secrets.GRPC_PORT }} \
+          ${{ env.DOCKER_IMAGE }}:latest
