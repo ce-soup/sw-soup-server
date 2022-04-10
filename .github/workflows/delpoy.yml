@@ -74,7 +74,7 @@ jobs:
       - name: 2. docker run
         run: |
           /home/soup/commands/remove_docker_container.sh ${{ env.DOCKER_NAME }} ${{ env.DOCKER_IMAGE }}:latest
-          docker run -d -p ${{ env.SERVER_PORT }}:${{ env.SERVER_PORT }} \
+          docker run -d -p ${{ env.SERVER_PORT }}:${{ env.SERVER_PORT }} -p ${{ secrets.GRPC_PORT }}:${{ secrets.GRPC_PORT }} \
           --net soup \
           --name ${{ env.DOCKER_NAME }} \
           --restart always -e APP_PORT=${{ env.SERVER_PORT }} \
