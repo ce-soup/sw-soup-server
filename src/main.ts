@@ -6,6 +6,7 @@ import { GrpcOptions, Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app.module';
 import { eurekaClientStart } from '@/common/eureka-client';
+import { AuthGuard } from '@/module/auth/auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,6 +28,7 @@ async function bootstrap() {
   eurekaClientStart();
 
   await app.startAllMicroservices();
+  await app.useGlobalGuards(new AuthGuard());
   await app.listen(+(process.env.APP_PORT ?? '3000'));
 }
 
