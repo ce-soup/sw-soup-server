@@ -31,6 +31,7 @@ async function bootstrap() {
           },
           'Authorization',
         )
+        .addServer('133.186.144.24:3000', 'Inferred Url')
         .build(),
     ),
     {
