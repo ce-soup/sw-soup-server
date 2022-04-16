@@ -7,9 +7,37 @@ import { GrpcOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { eurekaClientStart } from '@/common/eureka-client';
 import { AuthGuard } from '@/module/auth/auth.guard';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  SwaggerModule.setup(
+    'swagger',
+    app,
+    SwaggerModule.createDocument(
+      app,
+      new DocumentBuilder()
+        .setTitle('soup service server')
+        .setDescription('soup service server api documents')
+        .setVersion('1.0')
+        .addBasicAuth(
+          {
+            type: 'apiKey',
+            name: 'Authorization',
+            in: 'header',
+            scheme: 'Bearer',
+          },
+          'Authorization',
+        )
+        .build(),
+    ),
+    {
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    },
+  );
 
   const protoDir = join(__dirname, '..', 'proto');
   app.connectMicroservice<GrpcOptions>({
