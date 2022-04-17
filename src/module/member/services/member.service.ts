@@ -13,8 +13,8 @@ export class MemberService {
 
   async createMember({ name, sex }: CreateMemberRequest): Promise<MemberGrpcResponse> {
     try {
-      const member = await this.memberRepository.save(Member.of({ name, sex }));
-      return MemberGrpcResponse.of({ memberId: member.id });
+      const member: Member = await this.memberRepository.save(Member.of({ name, sex }));
+      return MemberGrpcResponse.of(member);
     } catch (e) {
       console.group(`[MemberService.createMember]`);
       console.error(e);
@@ -24,7 +24,7 @@ export class MemberService {
 
   async findMemberById(id: string): Promise<IMemberResponse> {
     try {
-      const member = await this.memberRepository.findOne({ id });
+      const member: Member = await this.memberRepository.findOne({ id });
       return MemberResponse.of(member);
     } catch (e) {
       console.group(`[MemberService.findMemberById]`);

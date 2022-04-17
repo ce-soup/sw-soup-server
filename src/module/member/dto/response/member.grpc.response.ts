@@ -1,3 +1,5 @@
+import { Member } from '@/module/member/domain/member.entity';
+
 export interface IMemberGrpcResponse {
   memberId: string;
 }
@@ -9,7 +11,7 @@ export class MemberGrpcResponse implements IMemberGrpcResponse {
     this.memberId = memberId;
   }
 
-  static of({ memberId }: IMemberGrpcResponse): MemberGrpcResponse {
-    return new MemberGrpcResponse(memberId);
+  static of({ id }: Member): MemberGrpcResponse {
+    return new MemberGrpcResponse(id);
   }
 }
