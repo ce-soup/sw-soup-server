@@ -1,5 +1,5 @@
-import { Body, Controller, Get } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param } from '@nestjs/common';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { RoleGuard } from '@/module/auth/role-guard.decorator';
 import { AuthUser } from '@/module/auth/auth-user.decorators';
@@ -15,11 +15,10 @@ import { MemberResponse } from '@/module/member/dto/response/member.response';
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
-  @Get()
+  @Get(':id')
   @ApiOperation({ summary: 'GetMember', description: '유저의 정보를 가져올 수 있어요.' })
-  @ApiBody({ type: FindMemberRequest })
   @ApiOkResponse({ description: 'OK', type: MemberResponse })
-  async getMember(@Body() request: FindMemberRequest): Promise<MemberResponse> {
+  async getMember(@Param('id') request: FindMemberRequest): Promise<MemberResponse> {
     return await this.memberService.findMemberById(request.id);
   }
 

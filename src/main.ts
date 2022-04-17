@@ -8,6 +8,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { eurekaClientStart } from '@/common/eureka-client';
 import { AuthGuard } from '@/module/auth/auth.guard';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -31,7 +32,12 @@ async function bootstrap() {
           },
           'Authorization',
         )
-        .addServer('133.186.144.24:3000', 'Inferred Url')
+        .addServer(
+          process.env.NODE_ENV === 'production'
+            ? '133.186.144.24:3000'
+            : `http://localhost:${process.env.APP_PORT ?? '3000'}`,
+          'Inferred Url',
+        )
         .build(),
     ),
     {
@@ -59,6 +65,7 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
   await app.useGlobalGuards(new AuthGuard());
+  await app.useGlobalPipes(new ValidationPipe());
   await app.listen(+(process.env.APP_PORT ?? '3000'));
 }
 

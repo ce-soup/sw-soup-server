@@ -15,11 +15,11 @@ export class RoleAuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const user: AuthUserResponse = {
-      memberId: undefined,
-      roles: undefined,
-      ...JSON.parse(request.header('authorization')),
-    } as AuthUserResponse;
+    const authorization = request.header('authorization');
+    if (!authorization) return false;
+
+    const user: AuthUserResponse = JSON.parse(authorization ?? '{}') as AuthUserResponse;
+
     return required.every((role) => user.roles.includes(role));
   }
 }

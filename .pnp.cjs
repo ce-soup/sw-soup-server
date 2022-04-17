@@ -55,6 +55,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/swagger-ui-express", "npm:4.1.3"],\
             ["@typescript-eslint/eslint-plugin", "virtual:432fd19935a226c9e03f9d531b98b41caacdfabffc010c7d12fd26bdd0427fe735fb515b684cd9c6171e9f06a5742a4036224d7c5db4ec9c03c5546b06b733f7#npm:5.15.0"],\
             ["@typescript-eslint/parser", "virtual:432fd19935a226c9e03f9d531b98b41caacdfabffc010c7d12fd26bdd0427fe735fb515b684cd9c6171e9f06a5742a4036224d7c5db4ec9c03c5546b06b733f7#npm:5.15.0"],\
+            ["class-transformer", "npm:0.5.1"],\
+            ["class-validator", "npm:0.13.2"],\
             ["cross-env", "npm:7.0.3"],\
             ["dotenv", "npm:16.0.0"],\
             ["eslint", "npm:8.11.0"],\
@@ -1410,8 +1412,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/rxjs", null],\
             ["axios", "npm:0.26.1"],\
             ["cache-manager", null],\
-            ["class-transformer", null],\
-            ["class-validator", null],\
+            ["class-transformer", "npm:0.5.1"],\
+            ["class-validator", "npm:0.13.2"],\
             ["iterare", "npm:1.2.1"],\
             ["reflect-metadata", "npm:0.1.13"],\
             ["rxjs", "npm:7.5.5"],\
@@ -3865,6 +3867,26 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/cjs-module-lexer-npm-1.2.2-473ce063ea-977f3f042b.zip/node_modules/cjs-module-lexer/",\
           "packageDependencies": [\
             ["cjs-module-lexer", "npm:1.2.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["class-transformer", [\
+        ["npm:0.5.1", {\
+          "packageLocation": "./.yarn/cache/class-transformer-npm-0.5.1-96b5161e6c-f191c8b4cc.zip/node_modules/class-transformer/",\
+          "packageDependencies": [\
+            ["class-transformer", "npm:0.5.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["class-validator", [\
+        ["npm:0.13.2", {\
+          "packageLocation": "./.yarn/cache/class-validator-npm-0.13.2-915206252c-0deb4c29fa.zip/node_modules/class-validator/",\
+          "packageDependencies": [\
+            ["class-validator", "npm:0.13.2"],\
+            ["libphonenumber-js", "npm:1.9.51"],\
+            ["validator", "npm:13.7.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7140,6 +7162,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["libphonenumber-js", [\
+        ["npm:1.9.51", {\
+          "packageLocation": "./.yarn/cache/libphonenumber-js-npm-1.9.51-98fef5f9bc-73a280a20c.zip/node_modules/libphonenumber-js/",\
+          "packageDependencies": [\
+            ["libphonenumber-js", "npm:1.9.51"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["lilconfig", [\
         ["npm:2.0.4", {\
           "packageLocation": "./.yarn/cache/lilconfig-npm-2.0.4-f0d8b03457-02ae530aa4.zip/node_modules/lilconfig/",\
@@ -9495,6 +9526,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/swagger-ui-express", "npm:4.1.3"],\
             ["@typescript-eslint/eslint-plugin", "virtual:432fd19935a226c9e03f9d531b98b41caacdfabffc010c7d12fd26bdd0427fe735fb515b684cd9c6171e9f06a5742a4036224d7c5db4ec9c03c5546b06b733f7#npm:5.15.0"],\
             ["@typescript-eslint/parser", "virtual:432fd19935a226c9e03f9d531b98b41caacdfabffc010c7d12fd26bdd0427fe735fb515b684cd9c6171e9f06a5742a4036224d7c5db4ec9c03c5546b06b733f7#npm:5.15.0"],\
+            ["class-transformer", "npm:0.5.1"],\
+            ["class-validator", "npm:0.13.2"],\
             ["cross-env", "npm:7.0.3"],\
             ["dotenv", "npm:16.0.0"],\
             ["eslint", "npm:8.11.0"],\
@@ -10385,6 +10418,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/istanbul-lib-coverage", "npm:2.0.4"],\
             ["convert-source-map", "npm:1.8.0"],\
             ["source-map", "npm:0.7.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["validator", [\
+        ["npm:13.7.0", {\
+          "packageLocation": "./.yarn/cache/validator-npm-13.7.0-624277e841-2b83283de1.zip/node_modules/validator/",\
+          "packageDependencies": [\
+            ["validator", "npm:13.7.0"]\
           ],\
           "linkType": "HARD"\
         }]\
