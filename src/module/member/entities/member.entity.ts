@@ -1,7 +1,7 @@
 import { Column, Entity } from 'typeorm';
 
 import { Core } from '@/module/core/core.entity';
-import { SexEnum } from '@/module/member/domain/member.enum';
+import { SexEnum } from '@/module/member/entities/member.enum';
 
 export interface IMember {
   name: string;

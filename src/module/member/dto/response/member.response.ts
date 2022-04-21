@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { SexEnum } from '@/module/member/domain/member.enum';
-import { Member } from '@/module/member/domain/member.entity';
+import { SexEnum } from '@/module/member/entities/member.enum';
+import { Member } from '@/module/member/entities/member.entity';
 
 export interface IMemberResponse {
   id: string;

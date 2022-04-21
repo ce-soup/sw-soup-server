@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Member } from '@/module/member/domain/member.entity';
+import { Member } from '@/module/member/entities/member.entity';
 import { CreateMemberRequest } from '@/module/member/dto/request/create-member.request';
 import { MemberGrpcResponse } from '@/module/member/dto/response/member.grpc.response';
 import { IMemberResponse, MemberResponse } from '@/module/member/dto/response/member.response';

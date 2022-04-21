@@ -1,4 +1,4 @@
-import { Member } from '@/module/member/domain/member.entity';
+import { Member } from '@/module/member/entities/member.entity';
 
 export interface IMemberGrpcResponse {
   memberId: string;
