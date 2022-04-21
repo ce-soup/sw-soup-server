@@ -25,6 +25,15 @@ export interface SoupConfig {
   REDIS_HOST: string;
   REDIS_PORT: number;
 
+  // Minio
+  MINIO_HOST: string;
+  MINIO_PORT: number;
+  MINIO_SSL: boolean;
+  MINIO_ROOT_USER: string;
+  MINIO_ROOT_PASSWORD: string;
+  MINIO_ACCESS_USER: string;
+  MINIO_SECRET_PASSWORD: string;
+
   // Grpc
   GRPC_PORT: number;
 
@@ -51,6 +60,15 @@ const validationSchema = Joi.object({
   // Redis
   REDIS_HOST: Joi.string().required(),
   REDIS_PORT: Joi.number().default(6379),
+
+  // Minio
+  MINIO_HOST: Joi.string().required(),
+  MINIO_PORT: Joi.number().default(9000),
+  MINIO_SSL: Joi.boolean().default(false),
+  MINIO_ROOT_USER: Joi.string().required(),
+  MINIO_ROOT_PASSWORD: Joi.string().required(),
+  MINIO_ACCESS_USER: Joi.string().required(),
+  MINIO_SECRET_PASSWORD: Joi.string().required(),
 
   // Grpc
   GRPC_PORT: Joi.number().default(5000),

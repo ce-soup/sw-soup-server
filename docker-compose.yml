@@ -25,6 +25,33 @@ services:
     networks:
       - soup
 
+  minio:
+    image: minio/minio
+    restart: unless-stopped
+    volumes:
+      - ./data/minio:/bucket
+    env_file:
+      - ./env/.env
+    command: server --address ":9000" --console-address ":9001" /bucket
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - soup
+
+  create-bucket:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add soup http://minio:9000 soup soup2022;
+      /usr/bin/mc mb soup/bucket;
+      exit 0;
+      "
+    networks:
+      - soup
+
 networks:
   soup:
     labels:
