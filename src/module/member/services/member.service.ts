@@ -4,17 +4,14 @@ import { Repository } from 'typeorm';
 
 import { Member } from '@/module/member/entities/member.entity';
 import { CreateMemberRequest } from '@/module/member/dto/request/create-member.request';
-import { MemberGrpcResponse } from '@/module/member/dto/response/member.grpc.response';
-import { IMemberResponse, MemberResponse } from '@/module/member/dto/response/member.response';
 
 @Injectable()
 export class MemberService {
   constructor(@InjectRepository(Member) private readonly memberRepository: Repository<Member>) {}
 
-  async createMember({ name, sex }: CreateMemberRequest): Promise<MemberGrpcResponse> {
+  async createMember({ name, sex }: CreateMemberRequest): Promise<Member> {
     try {
-      const member: Member = await this.memberRepository.save(Member.of({ name, sex }));
-      return MemberGrpcResponse.of(member);
+      return this.memberRepository.save(Member.of({ name, sex }));
     } catch (e) {
       console.group(`[MemberService.createMember]`);
       console.error(e);
@@ -22,10 +19,9 @@ export class MemberService {
     }
   }
 
-  async findMemberById(id: string): Promise<IMemberResponse> {
+  async findMemberById(id: string): Promise<Member> {
     try {
-      const member: Member = await this.memberRepository.findOne({ id });
-      return MemberResponse.of(member);
+      return this.memberRepository.findOne({ where: { id } });
     } catch (e) {
       console.group(`[MemberService.findMemberById]`);
       console.error(e);

@@ -6,7 +6,15 @@ export interface IFindMemberRequest {
 }
 
 export class FindMemberRequest implements IFindMemberRequest {
+  constructor(id: string) {
+    this.id = id;
+  }
+
   @ApiProperty({ description: 'id' })
-  @IsUUID(4)
+  @IsUUID()
   id: string;
+
+  static of({ id }: IFindMemberRequest): FindMemberRequest {
+    return new FindMemberRequest(id);
+  }
 }

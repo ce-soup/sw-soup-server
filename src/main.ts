@@ -8,10 +8,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { eurekaClientStart } from '@/common/eureka-client';
 import { AuthGuard } from '@/module/auth/auth.guard';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from './common/validation-pipe.config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+  });
   app.enableCors();
 
   SwaggerModule.setup(
@@ -33,9 +35,7 @@ async function bootstrap() {
           'Authorization',
         )
         .addServer(
-          process.env.NODE_ENV === 'production'
-            ? '133.186.144.24:3000'
-            : `http://localhost:${process.env.APP_PORT ?? '3000'}`,
+          process.env.NODE_ENV === 'production' ? '133.186.144.24:3000' : `http://localhost:3000`,
           'Inferred Url',
         )
         .build(),
@@ -65,7 +65,7 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
   await app.useGlobalGuards(new AuthGuard());
-  await app.useGlobalPipes(new ValidationPipe());
+  await app.useGlobalPipes(ValidationPipe);
   await app.listen(+(process.env.APP_PORT ?? '3000'));
 }
 

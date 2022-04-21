@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client } from 'minio';
-import { Readable } from 'stream';
 
 import { SoupConfig } from '@/common/config.module';
+import * as Buffer from 'buffer';
 
 @Injectable()
 export class MinioService {
@@ -20,7 +20,7 @@ export class MinioService {
     });
   }
 
-  async upload(key: string, body: Readable): Promise<void> {
+  async upload(key: string, body: Buffer): Promise<void> {
     try {
       await this.client.putObject(this.bucket, key, body);
     } catch (e) {
