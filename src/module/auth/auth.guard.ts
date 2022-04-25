@@ -6,11 +6,12 @@ import { AuthUserResponse } from '@/module/auth/dto/response/AuthUserResponse';
 export class AuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request: Request = context.switchToHttp().getRequest();
-    const header: AuthUserResponse = {
-      memberId: undefined,
-      roles: undefined,
-      ...JSON.parse(request.header('authorization')),
-    } as AuthUserResponse;
-    return header?.memberId !== null;
+
+    const authorization = request.header('authorization');
+    if (!authorization) return false;
+
+    const header: AuthUserResponse = JSON.parse(authorization) as AuthUserResponse;
+
+    return !!header?.memberId && header?.memberId?.length > 0;
   }
 }

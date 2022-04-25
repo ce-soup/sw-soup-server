@@ -1,4 +1,4 @@
-import { SexEnum } from '@/module/member/domain/member.enum';
+import { SexEnum } from '@/module/member/entities/member.enum';
 
 export interface ICreateMemberRequest {
   name: string;
