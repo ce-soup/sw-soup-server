@@ -12,6 +12,7 @@ export interface SoupConfig {
 
   // Soup Server
   APP_PORT: number;
+  SERVER_URL: string;
 
   // Database
   POSTGRES_HOST: string;
@@ -48,6 +49,7 @@ const validationSchema = Joi.object({
 
   // Soup Server
   APP_PORT: Joi.number().default(3000),
+  SERVER_URL: Joi.string().default('localhost'),
 
   // Database
   POSTGRES_HOST: Joi.string().required(),

@@ -9,6 +9,7 @@ env:
   DOCKER_IMAGE: ghcr.io/ce-soup/sw-soup-server
   VERSION: ${{ github.sha }}
   DOCKER_NAME: soup
+  SERVER_URL: 133.186.144.24
   SERVER_PORT: 8080
   EUREKA_HOST: 133.186.144.24
   EUREKA_PORT: 8761
@@ -79,6 +80,7 @@ jobs:
           --name ${{ env.DOCKER_NAME }} \
           --restart always -e APP_PORT=${{ env.SERVER_PORT }} \
           -e NODE_ENV=production \
+          -e SERVER_URL=${{ env.SERVER_URL }} \
           -e POSTGRES_HOST=${{ secrets.DATABASE_HOST }} \
           -e POSTGRES_PORT=${{ secrets.DATABASE_PORT }} \
           -e POSTGRES_DB=${{ secrets.DATABASE_DB }} \

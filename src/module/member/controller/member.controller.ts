@@ -6,9 +6,7 @@ import { AuthUser } from '@/module/auth/auth-user.decorators';
 import { AuthUserResponse, Role } from '@/module/auth/dto/response/AuthUserResponse';
 
 import { FindMemberRequest } from '@/module/member/dto/request/find-member.request';
-import { UpdateProfileImageRequest } from '@/module/member/dto/request/update-profile-image.request';
 import { MemberResponse } from '@/module/member/dto/response/member.response';
-import { FileResponse } from '@/module/file/dto/response/file.response';
 import { MemberFacade } from '@/module/member/member.facade';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateProfileRequest } from '@/module/member/dto/request/update-profile.request';
@@ -32,29 +30,6 @@ export class MemberController {
   @ApiOkResponse({ description: 'OK', type: MemberResponse })
   async getMe(@AuthUser() user: AuthUserResponse): Promise<MemberResponse> {
     return this.memberFacade.getMe(user);
-  }
-
-  @Post('/profile/image')
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
-  @ApiOperation({ summary: 'UpdateProfileImage', description: '프로필 사진을 업데이트 할 수 있어요.' })
-  @ApiOkResponse({ description: 'OK', type: FileResponse })
-  @UseInterceptors(FileInterceptor('file'))
-  async updateProfileImage(
-    @AuthUser() user: AuthUserResponse,
-    @UploadedFile() { file }: UpdateProfileImageRequest,
-  ): Promise<FileResponse> {
-    return this.memberFacade.updateProfileImage(file, user);
   }
 
   @Post('/profile')
