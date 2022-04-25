@@ -28,4 +28,16 @@ export class MemberService {
       console.groupEnd();
     }
   }
+
+  async updateMember(id: string, bio: string): Promise<Member> {
+    try {
+      const member: Member = await this.memberRepository.findOne({ where: { id } });
+      member.bio = bio;
+      return this.memberRepository.save(member);
+    } catch (e) {
+      console.group(`[MemberService.updateMember]`);
+      console.error(e);
+      console.groupEnd();
+    }
+  }
 }

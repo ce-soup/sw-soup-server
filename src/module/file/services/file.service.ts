@@ -10,6 +10,16 @@ import { FileResponse, IFileResponse } from '@/module/file/dto/response/file.res
 export class FileService {
   constructor(@InjectRepository(File) private readonly fileRepository: Repository<File>) {}
 
+  async findByFileTypeAndMemberId(fileType: FileTypes, memberId: string): Promise<File | null> {
+    try {
+      return this.fileRepository.findOne({ where: { type: fileType, uploaderId: memberId } });
+    } catch (e) {
+      console.group('[FileService.create]');
+      console.log(e);
+      console.groupEnd();
+    }
+  }
+
   async create(type: FileTypes, key: string, mime: string, name: string, uploaderId: string): Promise<FileResponse> {
     try {
       const { generatedMaps } = await this.fileRepository.insert({
@@ -21,6 +31,16 @@ export class FileService {
       });
 
       return FileResponse.of({ ...generatedMaps[0], key } as IFileResponse);
+    } catch (e) {
+      console.group('[FileService.create]');
+      console.log(e);
+      console.groupEnd();
+    }
+  }
+
+  async deleteByKey(key: string): Promise<void> {
+    try {
+      await this.fileRepository.delete({ key });
     } catch (e) {
       console.group('[FileService.create]');
       console.log(e);

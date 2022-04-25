@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { RoleGuard } from '@/module/auth/role-guard.decorator';
@@ -11,6 +11,8 @@ import { MemberResponse } from '@/module/member/dto/response/member.response';
 import { FileResponse } from '@/module/file/dto/response/file.response';
 import { MemberFacade } from '@/module/member/member.facade';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateProfileRequest } from '@/module/member/dto/request/update-profile.request';
+import { Express } from 'express';
 
 @ApiTags('MemberController')
 @Controller('/api/v1/member')
@@ -53,5 +55,32 @@ export class MemberController {
     @UploadedFile() { file }: UpdateProfileImageRequest,
   ): Promise<FileResponse> {
     return this.memberFacade.updateProfileImage(file, user);
+  }
+
+  @Post('/profile')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        profileImage: {
+          type: 'string',
+          format: 'binary',
+        },
+        bio: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  @ApiOperation({ summary: 'UpdateProfile', description: '프로필을 업데이트 할 수 있어요.' })
+  @ApiOkResponse({ description: 'OK', type: MemberResponse })
+  @UseInterceptors(FileInterceptor('profileImage'))
+  async updateProfile(
+    @AuthUser() user: AuthUserResponse,
+    @UploadedFile() profileImage: Express.Multer.File,
+    @Body() updateProfileRequest: UpdateProfileRequest,
+  ): Promise<MemberResponse> {
+    return this.memberFacade.updateProfile(user, updateProfileRequest, profileImage);
   }
 }
