@@ -86,6 +86,13 @@ jobs:
           -e POSTGRES_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
           -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
           -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
+          -e MINIO_HOST=${{ secrets.MINIO_HOST }} \
+          -e MINIO_PORT=${{ secrets.MINIO_PORT }} \
+          -e MINIO_SSL=${{ secrets.MINIO_SSL }} \
+          -e MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }} \
+          -e MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }} \
+          -e MINIO_ACCESS_USER=${{ secrets.MINIO_ACCESS_USER }} \
+          -e MINIO_SECRET_PASSWORD=${{ secrets.MINIO_SECRET_PASSWORD }} \
           -e GRPC_PORT=${{ secrets.GRPC_PORT }} \
           -e EUREKA_HOST=${{ env.EUREKA_HOST }} \
           -e EUREKA_PORT=${{ env.EUREKA_PORT }} \
