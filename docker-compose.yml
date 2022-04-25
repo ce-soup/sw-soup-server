@@ -27,7 +27,6 @@ services:
 
   minio:
     image: minio/minio
-    restart: unless-stopped
     volumes:
       - ./data/minio:/bucket
     env_file:
