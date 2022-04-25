@@ -17,7 +17,7 @@ export class FileResponse implements IFileResponse {
   constructor(id: string, key: string) {
     this.id = id;
     this.key = key;
-    this.url = `http://${process.env.MINIO_HOST}:${process.env.MINIO_PORT}/bucket/${key}`;
+    this.url = `http://${process.env.SERVER_URL ?? 'localhost'}:${process.env.MINIO_PORT}/bucket/${key}`;
   }
 
   static of({ id, key }: { id: string; key: string }): FileResponse {
