@@ -38,7 +38,9 @@ export const eurekaClientStart = () => {
 
   client.start();
 
-  process.on('SIGINT', () => {
-    client.stop();
-  });
+  return () => {
+    process.on('SIGINT', () => {
+      client.stop();
+    });
+  };
 };
