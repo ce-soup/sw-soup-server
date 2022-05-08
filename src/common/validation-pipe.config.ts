@@ -1,7 +1,7 @@
 import { ValidationPipe as VP, ValidationPipeOptions } from '@nestjs/common';
 
 const options: ValidationPipeOptions = {
-  transform: false,
+  transform: true,
 };
 
 export const ValidationPipe = new VP(options);
