@@ -36,12 +36,14 @@ export class GroupFacade {
     request: CreateGroupRequest,
     image: Express.Multer.File,
   ): Promise<GroupResponse> {
-    const file = await this.fileFacade.create(
-      FileTypes.Group,
-      image,
+    const file = image
+      ? await this.fileFacade.create(FileTypes.Group, image, managerId)
+      : null;
+    const group = await this.groupService.create(
       managerId,
+      request,
+      file ? file.id : null,
     );
-    const group = await this.groupService.create(managerId, request, file.id);
 
     return GroupResponse.of(group);
   }
