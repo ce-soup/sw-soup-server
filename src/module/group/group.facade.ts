@@ -8,6 +8,8 @@ import { FileFacade } from '@/module/file/file.facade';
 import { FileTypes } from '@/module/file/file.contants';
 import { GroupTypeEnum } from '@/module/group/entities/types';
 import { GroupNotFoundException } from '@/module/group/exceptions/group-not-found.exception';
+import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.request';
+import { UpdatePermissionException } from '@/module/group/exceptions/update-permission.exception';
 
 @Injectable()
 export class GroupFacade {
@@ -46,5 +48,32 @@ export class GroupFacade {
     );
 
     return GroupResponse.of(group);
+  }
+
+  async update(
+    groupId: string,
+    memberId: string,
+    request: UpdateGroupRequest,
+    image: Express.Multer.File,
+  ): Promise<GroupResponse> {
+    const group = await this.groupService.getById(groupId);
+    if (group.managerId !== memberId) {
+      throw new UpdatePermissionException();
+    }
+
+    const newImage = image
+      ? await (async () => {
+          await this.fileFacade.delete(group.imageId);
+          return await this.fileFacade.create(FileTypes.Group, image, memberId);
+        })()
+      : null;
+
+    const newGroup = await this.groupService.update(
+      groupId,
+      request,
+      newImage ? newImage.id : null,
+    );
+
+    return GroupResponse.of(newGroup);
   }
 }

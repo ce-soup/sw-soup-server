@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -27,6 +28,7 @@ import { GroupResponse } from '@/module/group/dto/response/group.response';
 import { GroupFacade } from '@/module/group/group.facade';
 import { CreateGroupRequest } from '@/module/group/dto/request/create-group.request';
 import { GroupTypeEnum } from '@/module/group/entities/types';
+import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.request';
 
 @ApiTags('GroupController')
 @Controller('/api/v1/group')
@@ -71,5 +73,28 @@ export class GroupController {
     @Body() createGroupRequest: CreateGroupRequest,
   ): Promise<GroupResponse> {
     return this.groupFacade.create(memberId, createGroupRequest, image);
+  }
+
+  @Patch(':groupId')
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({
+    summary: 'UpdateGroup',
+    description: '그룹을 수정할 수 있어요.',
+  })
+  @ApiOkResponse({ description: 'OK', type: GroupResponse })
+  @ApiImplicitFile({ name: 'image' })
+  @UseInterceptors(FileInterceptor('image'))
+  async updateGroup(
+    @Param('groupId') groupId: string,
+    @AuthUser() { memberId }: AuthUserResponse,
+    @UploadedFile() image: Express.Multer.File,
+    @Body() updateGroupRequest: UpdateGroupRequest,
+  ): Promise<GroupResponse> {
+    return this.groupFacade.update(
+      groupId,
+      memberId,
+      updateGroupRequest,
+      image,
+    );
   }
 }
