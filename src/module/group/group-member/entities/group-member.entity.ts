@@ -28,7 +28,7 @@ export class GroupMember extends Core implements IGroupMember {
   @Column()
   memberId: string;
 
-  @Column()
+  @Column({ nullable: true })
   isAccepted: boolean;
 
   constructor(groupId: string, memberId: string, isAccepted: boolean) {

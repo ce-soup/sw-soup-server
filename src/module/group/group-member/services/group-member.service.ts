@@ -20,6 +20,7 @@ export class GroupMemberService {
         where: {
           groupId,
         },
+        relations: ['member'],
       });
     } catch (e) {
       console.group(`[GroupMemberService.getByGroupId]`);
@@ -71,7 +72,7 @@ export class GroupMemberService {
   async join(
     groupId: string,
     memberId: string,
-    isAccepted = false,
+    isAccepted = null,
   ): Promise<GroupMember> {
     try {
       return this.groupMemberRepository.save(

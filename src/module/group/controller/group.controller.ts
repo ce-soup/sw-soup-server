@@ -30,6 +30,7 @@ import { GroupFacade } from '@/module/group/group.facade';
 import { CreateGroupRequest } from '@/module/group/dto/request/create-group.request';
 import { GroupTypeEnum } from '@/module/group/entities/types';
 import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.request';
+import { GroupMemberResponse } from '@/module/group/group-member/dto/response/group-member.response';
 
 @ApiTags('GroupController')
 @Controller('/api/v1/group')
@@ -69,6 +70,19 @@ export class GroupController {
     @AuthUser() { memberId }: AuthUserResponse,
   ): Promise<GroupResponse[]> {
     return this.groupFacade.getJoinedGroup(memberId);
+  }
+
+  @Get('/:groupId/member/list')
+  @ApiOperation({
+    summary: 'GroupMemberList',
+    description: '그룹의 참여자 목록을 가져올 수 있어요.',
+  })
+  @ApiOkResponse({ description: 'OK', type: [GroupMemberResponse] })
+  async groupMemberList(
+    @Param('groupId') groupId: string,
+    @AuthUser() { memberId }: AuthUserResponse,
+  ): Promise<GroupMemberResponse[]> {
+    return this.groupFacade.getGroupMember(groupId, memberId);
   }
 
   @Post('/new')

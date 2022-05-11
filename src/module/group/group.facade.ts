@@ -18,6 +18,7 @@ import { FullOfParticipantsException } from '@/module/group/exceptions/full-of-p
 import { AlreadyInGroupMemberException } from '@/module/group/exceptions/already-in-group-member.exception';
 import { NotJoinGroupMemberException } from '@/module/group/exceptions/not-join-group-member.exception';
 import { NotGroupManagerException } from '@/module/group/exceptions/not-group-manager.exception';
+import { GroupMemberResponse } from '@/module/group/group-member/dto/response/group-member.response';
 
 @Injectable()
 export class GroupFacade {
@@ -50,6 +51,22 @@ export class GroupFacade {
     const groupList = await this.groupService.getByIds(groupListIds);
 
     return groupList.map((group) => GroupResponse.of(group));
+  }
+
+  async getGroupMember(
+    groupId: string,
+    memberId: string,
+  ): Promise<GroupMemberResponse[]> {
+    const groupMemberList = await this.groupMemberService.getByGroupId(groupId);
+    if (await this.isGroupManager(groupId, memberId)) {
+      return groupMemberList.map((groupMember) =>
+        GroupMemberResponse.of(groupMember),
+      );
+    }
+
+    return groupMemberList
+      .filter(({ isAccepted }) => isAccepted)
+      .map((groupMember) => GroupMemberResponse.of(groupMember));
   }
 
   async create(
@@ -112,7 +129,7 @@ export class GroupFacade {
     await this.groupMemberService.join(
       groupId,
       memberId,
-      group.recruitment === GroupRecruitmentEnum.FirstCome,
+      group.recruitment === GroupRecruitmentEnum.FirstCome ? true : null,
     );
 
     return true;
