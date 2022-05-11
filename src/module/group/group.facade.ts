@@ -17,6 +17,7 @@ import { GroupMemberService } from '@/module/group/group-member/services/group-m
 import { FullOfParticipantsException } from '@/module/group/exceptions/full-of-participants.exception';
 import { AlreadyInGroupMemberException } from '@/module/group/exceptions/already-in-group-member.exception';
 import { NotJoinGroupMemberException } from '@/module/group/exceptions/not-join-group-member.exception';
+import { NotGroupManagerException } from '@/module/group/exceptions/not-group-manager.exception';
 
 @Injectable()
 export class GroupFacade {
@@ -127,6 +128,22 @@ export class GroupFacade {
     return true;
   }
 
+  async accept(groupId: string, memberId: string): Promise<boolean> {
+    if (!(await this.isGroupManager(groupId, memberId))) {
+      throw new NotGroupManagerException();
+    }
+
+    return this.groupMemberService.accept(groupId, memberId);
+  }
+
+  async reject(groupId: string, memberId: string): Promise<boolean> {
+    if (!(await this.isGroupManager(groupId, memberId))) {
+      throw new NotGroupManagerException();
+    }
+
+    return this.groupMemberService.reject(groupId, memberId);
+  }
+
   private async isGroupMember(
     groupId: string,
     memberId: string,
@@ -134,5 +151,13 @@ export class GroupFacade {
     return await this.groupMemberService
       .getByGroupIdAndMemberId(groupId, memberId)
       .then((res) => !!res);
+  }
+
+  private async isGroupManager(
+    groupId: string,
+    memberId: string,
+  ): Promise<boolean> {
+    const group = await this.groupService.getById(groupId);
+    return group.managerId === memberId;
   }
 }

@@ -97,4 +97,38 @@ export class GroupMemberService {
       console.groupEnd();
     }
   }
+
+  /**
+   * 그룹 참여 허가
+   * */
+  async accept(groupId: string, memberId: string): Promise<boolean> {
+    try {
+      const groupMember = await this.getByGroupIdAndMemberId(groupId, memberId);
+      groupMember.isAccepted = true;
+      await this.groupMemberRepository.save(groupMember);
+
+      return true;
+    } catch (e) {
+      console.group(`[]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
+
+  /**
+   * 그룹 참여 불허가
+   * */
+  async reject(groupId: string, memberId: string): Promise<boolean> {
+    try {
+      const groupMember = await this.getByGroupIdAndMemberId(groupId, memberId);
+      groupMember.isAccepted = false;
+      await this.groupMemberRepository.save(groupMember);
+
+      return true;
+    } catch (e) {
+      console.group(`[]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
 }

@@ -136,4 +136,30 @@ export class GroupController {
   ): Promise<boolean> {
     return this.groupFacade.cancel(groupId, memberId);
   }
+
+  @Patch('/accept/:groupId')
+  @ApiOperation({
+    summary: 'AcceptGroupMember',
+    description: '그룹 참여 신청을 수락할 수 있어요.',
+  })
+  @ApiOkResponse({ description: 'OK', type: Boolean })
+  async acceptGroupMember(
+    @Param('groupId') groupId: string,
+    @AuthUser() { memberId }: AuthUserResponse,
+  ): Promise<boolean> {
+    return this.groupFacade.accept(groupId, memberId);
+  }
+
+  @Patch('/reject/:groupId')
+  @ApiOperation({
+    summary: 'RejectGroupMember',
+    description: '그룹 참여 신청을 거절할 수 있어요.',
+  })
+  @ApiOkResponse({ description: 'OK', type: Boolean })
+  async rejectGroupMember(
+    @Param('groupId') groupId: string,
+    @AuthUser() { memberId }: AuthUserResponse,
+  ): Promise<boolean> {
+    return this.groupFacade.reject(groupId, memberId);
+  }
 }
