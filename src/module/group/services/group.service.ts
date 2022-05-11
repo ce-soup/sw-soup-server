@@ -27,6 +27,19 @@ export class GroupService {
     }
   }
 
+  async getByIds(ids: string[]): Promise<Group[]> {
+    try {
+      return this.groupRepository.find({
+        where: { id: In(ids) },
+        relations: ['image', 'category', 'manager'],
+      });
+    } catch (e) {
+      console.group(`[GroupService.getByGroupType]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
+
   /**
    * Todo: scope가 member일 경우에 대한 필터링 필요 && 검색 필터링 관련 옵션 필요
    * */

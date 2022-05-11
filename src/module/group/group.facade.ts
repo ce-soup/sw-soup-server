@@ -6,15 +6,23 @@ import { GroupResponse } from '@/module/group/dto/response/group.response';
 import { Express } from 'express';
 import { FileFacade } from '@/module/file/file.facade';
 import { FileTypes } from '@/module/file/file.contants';
-import { GroupTypeEnum } from '@/module/group/entities/types';
+import {
+  GroupRecruitmentEnum,
+  GroupTypeEnum,
+} from '@/module/group/entities/types';
 import { GroupNotFoundException } from '@/module/group/exceptions/group-not-found.exception';
 import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.request';
 import { UpdatePermissionException } from '@/module/group/exceptions/update-permission.exception';
+import { GroupMemberService } from '@/module/group/group-member/services/group-member.service';
+import { FullOfParticipantsException } from '@/module/group/exceptions/full-of-participants.exception';
+import { AlreadyInGroupMemberException } from '@/module/group/exceptions/already-in-group-member.exception';
+import { NotJoinGroupMemberException } from '@/module/group/exceptions/not-join-group-member.exception';
 
 @Injectable()
 export class GroupFacade {
   constructor(
     private readonly groupService: GroupService,
+    private readonly groupMemberService: GroupMemberService,
     private readonly fileFacade: FileFacade,
   ) {}
 
@@ -29,6 +37,16 @@ export class GroupFacade {
 
   async getAll(groupType: GroupTypeEnum): Promise<GroupResponse[]> {
     const groupList = await this.groupService.getByGroupType(groupType);
+
+    return groupList.map((group) => GroupResponse.of(group));
+  }
+
+  async getJoinedGroup(memberId: string): Promise<GroupResponse[]> {
+    const groupListIds = await this.groupMemberService
+      .getByMemberId(memberId)
+      .then((groupMember) => groupMember.map(({ group }) => group.id));
+
+    const groupList = await this.groupService.getByIds(groupListIds);
 
     return groupList.map((group) => GroupResponse.of(group));
   }
@@ -75,5 +93,46 @@ export class GroupFacade {
     );
 
     return GroupResponse.of(newGroup);
+  }
+
+  async join(groupId: string, memberId: string): Promise<boolean> {
+    const group = await this.groupService.getById(groupId);
+    if (await this.isGroupMember(groupId, memberId)) {
+      throw new AlreadyInGroupMemberException();
+    }
+    if (
+      (await this.groupMemberService
+        .getByGroupId(groupId)
+        .then((res) => res.length)) >= group.personnel
+    ) {
+      throw new FullOfParticipantsException();
+    }
+
+    await this.groupMemberService.join(
+      groupId,
+      memberId,
+      group.recruitment === GroupRecruitmentEnum.FirstCome,
+    );
+
+    return true;
+  }
+
+  async cancel(groupId: string, memberId: string): Promise<boolean> {
+    if (!(await this.isGroupMember(groupId, memberId))) {
+      throw new NotJoinGroupMemberException();
+    }
+
+    await this.groupMemberService.cancel(groupId, memberId);
+
+    return true;
+  }
+
+  private async isGroupMember(
+    groupId: string,
+    memberId: string,
+  ): Promise<boolean> {
+    return await this.groupMemberService
+      .getByGroupIdAndMemberId(groupId, memberId)
+      .then((res) => !!res);
   }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -58,6 +59,18 @@ export class GroupController {
     return this.groupFacade.getAll(groupType);
   }
 
+  @Get('/join/list')
+  @ApiOperation({
+    summary: 'JoinedGroup',
+    description: '참여한 그룹 목록을 가져올 수 있어요.',
+  })
+  @ApiOkResponse({ description: 'OK', type: [GroupResponse] })
+  async joinedGroup(
+    @AuthUser() { memberId }: AuthUserResponse,
+  ): Promise<GroupResponse[]> {
+    return this.groupFacade.getJoinedGroup(memberId);
+  }
+
   @Post('/new')
   @ApiConsumes('multipart/form-data')
   @ApiOperation({
@@ -96,5 +109,31 @@ export class GroupController {
       updateGroupRequest,
       image,
     );
+  }
+
+  @Post('/join/:groupId')
+  @ApiOperation({
+    summary: 'JoinGroup',
+    description: '그룹에 참여할 수 있어요.',
+  })
+  @ApiOkResponse({ description: 'OK', type: Boolean })
+  async joinGroup(
+    @Param('groupId') groupId: string,
+    @AuthUser() { memberId }: AuthUserResponse,
+  ): Promise<boolean> {
+    return this.groupFacade.join(groupId, memberId);
+  }
+
+  @Delete('/cancel/:groupId')
+  @ApiOperation({
+    summary: 'CancelGroup',
+    description: '그룹 참여를 취소할 수 있어요.',
+  })
+  @ApiOkResponse({ description: 'OK', type: Boolean })
+  async cancelGroup(
+    @Param('groupId') groupId: string,
+    @AuthUser() { memberId }: AuthUserResponse,
+  ): Promise<boolean> {
+    return this.groupFacade.cancel(groupId, memberId);
   }
 }
