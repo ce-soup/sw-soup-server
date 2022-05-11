@@ -128,4 +128,16 @@ export class GroupService {
       console.groupEnd();
     }
   }
+
+  async delete(groupId: string): Promise<boolean> {
+    try {
+      await this.groupRepository.delete(groupId);
+
+      return true;
+    } catch (e) {
+      console.group(`[GroupService.delete]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
 }

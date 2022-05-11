@@ -125,6 +125,19 @@ export class GroupController {
     );
   }
 
+  @Delete('/:groupId')
+  @ApiOperation({
+    summary: 'DeleteGroup',
+    description: '그룹을 삭제할 수 있어요.',
+  })
+  @ApiOkResponse({ description: 'OK', type: Boolean })
+  async groupDelete(
+    @Param('groupId') groupId: string,
+    @AuthUser() { memberId }: AuthUserResponse,
+  ): Promise<boolean> {
+    return this.groupFacade.delete(groupId, memberId);
+  }
+
   @Post('/join/:groupId')
   @ApiOperation({
     summary: 'JoinGroup',
@@ -159,9 +172,10 @@ export class GroupController {
   @ApiOkResponse({ description: 'OK', type: Boolean })
   async acceptGroupMember(
     @Param('groupId') groupId: string,
-    @AuthUser() { memberId }: AuthUserResponse,
+    @AuthUser() { memberId: managerId }: AuthUserResponse,
+    @Body() { memberId }: { memberId: string },
   ): Promise<boolean> {
-    return this.groupFacade.accept(groupId, memberId);
+    return this.groupFacade.accept(groupId, managerId, memberId);
   }
 
   @Patch('/reject/:groupId')
@@ -172,8 +186,9 @@ export class GroupController {
   @ApiOkResponse({ description: 'OK', type: Boolean })
   async rejectGroupMember(
     @Param('groupId') groupId: string,
-    @AuthUser() { memberId }: AuthUserResponse,
+    @AuthUser() { memberId: managerId }: AuthUserResponse,
+    @Body() { memberId }: { memberId: string },
   ): Promise<boolean> {
-    return this.groupFacade.reject(groupId, memberId);
+    return this.groupFacade.reject(groupId, managerId, memberId);
   }
 }

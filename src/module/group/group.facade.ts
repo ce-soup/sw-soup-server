@@ -19,6 +19,7 @@ import { AlreadyInGroupMemberException } from '@/module/group/exceptions/already
 import { NotJoinGroupMemberException } from '@/module/group/exceptions/not-join-group-member.exception';
 import { NotGroupManagerException } from '@/module/group/exceptions/not-group-manager.exception';
 import { GroupMemberResponse } from '@/module/group/group-member/dto/response/group-member.response';
+import { AvailableManagerRejectException } from '@/module/group/exceptions/available-manager-reject.exception';
 
 @Injectable()
 export class GroupFacade {
@@ -115,6 +116,14 @@ export class GroupFacade {
     return GroupResponse.of(newGroup);
   }
 
+  async delete(groupId: string, memberId: string): Promise<boolean> {
+    if (!(await this.isGroupManager(groupId, memberId))) {
+      throw new NotGroupManagerException();
+    }
+
+    return this.groupService.delete(groupId);
+  }
+
   async join(groupId: string, memberId: string): Promise<boolean> {
     const group = await this.groupService.getById(groupId);
     if (await this.isGroupMember(groupId, memberId)) {
@@ -147,17 +156,28 @@ export class GroupFacade {
     return true;
   }
 
-  async accept(groupId: string, memberId: string): Promise<boolean> {
-    if (!(await this.isGroupManager(groupId, memberId))) {
+  async accept(
+    groupId: string,
+    managerId: string,
+    memberId: string,
+  ): Promise<boolean> {
+    if (!(await this.isGroupManager(groupId, managerId))) {
       throw new NotGroupManagerException();
     }
 
     return this.groupMemberService.accept(groupId, memberId);
   }
 
-  async reject(groupId: string, memberId: string): Promise<boolean> {
-    if (!(await this.isGroupManager(groupId, memberId))) {
+  async reject(
+    groupId: string,
+    managerId: string,
+    memberId: string,
+  ): Promise<boolean> {
+    if (!(await this.isGroupManager(groupId, managerId))) {
       throw new NotGroupManagerException();
+    }
+    if (await this.isGroupManager(groupId, memberId)) {
+      throw new AvailableManagerRejectException();
     }
 
     return this.groupMemberService.reject(groupId, memberId);

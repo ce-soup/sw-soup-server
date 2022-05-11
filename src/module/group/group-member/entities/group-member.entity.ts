@@ -14,14 +14,14 @@ export interface IGroupMember {
 
 @Entity()
 export class GroupMember extends Core implements IGroupMember {
-  @ManyToOne(() => Group)
+  @ManyToOne(() => Group, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'group_id' })
   group: Group;
 
   @Column()
   groupId: string;
 
-  @ManyToOne(() => Member)
+  @ManyToOne(() => Member, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'member_id' })
   member: Member;
 
