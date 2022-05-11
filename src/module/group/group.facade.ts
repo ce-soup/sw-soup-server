@@ -83,6 +83,8 @@ export class GroupFacade {
       file ? file.id : null,
     );
 
+    await this.groupMemberService.join(group.id, managerId, true);
+
     return GroupResponse.of(group);
   }
 
