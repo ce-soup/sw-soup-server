@@ -19,7 +19,7 @@ export interface IGroup {
   name: string;
   category: Category;
   categoryId: string;
-  image: File;
+  image?: File;
   imageId: string;
   status: GroupStatusEnum;
   manager: Member;
@@ -58,9 +58,9 @@ export class Group extends Core implements IGroup {
   @Column()
   categoryId: string;
 
-  @ManyToOne(() => File)
+  @ManyToOne(() => File, { nullable: true })
   @JoinColumn({ name: 'image_id' })
-  image: File;
+  image?: File;
 
   @Column()
   imageId: string;
