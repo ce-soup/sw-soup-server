@@ -40,9 +40,6 @@ export class GroupService {
     }
   }
 
-  /**
-   * Todo: scope가 member일 경우에 대한 필터링 필요 && 검색 필터링 관련 옵션 필요
-   * */
   async getByGroupType(groupType: GroupTypeEnum): Promise<Group[]> {
     try {
       return this.groupRepository.find({
@@ -54,6 +51,36 @@ export class GroupService {
       });
     } catch (e) {
       console.group(`[GroupService.getByGroupType]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
+
+  async getPopularGroup(limit?: number): Promise<Group[]> {
+    try {
+      const query = await this.groupRepository.createQueryBuilder('group');
+      query
+        .orderBy('views', 'DESC')
+        .leftJoinAndSelect('group.image', 'image')
+        .leftJoinAndSelect('group.category', 'category')
+        .leftJoinAndSelect('group.manager', 'manager');
+      if (limit) query.limit(limit);
+      return query.getMany();
+    } catch (e) {
+      console.group(`[GroupService.getPopularGroup]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
+
+  async increaseViewCount(groupId: string): Promise<boolean> {
+    try {
+      const group = await this.getById(groupId);
+      group.views += 1;
+      await this.groupRepository.save(group);
+      return true;
+    } catch (e) {
+      console.group(`[GroupService.increaseViewCount]`);
       console.log(e);
       console.groupEnd();
     }

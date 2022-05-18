@@ -30,6 +30,7 @@ export class GroupFacade {
   ) {}
 
   async getOne(id: string): Promise<GroupResponse> {
+    await this.groupService.increaseViewCount(id);
     const group = await this.groupService.getById(id);
     if (!group) {
       throw new GroupNotFoundException();
@@ -40,6 +41,12 @@ export class GroupFacade {
 
   async getAll(groupType: GroupTypeEnum): Promise<GroupResponse[]> {
     const groupList = await this.groupService.getByGroupType(groupType);
+
+    return groupList.map((group) => GroupResponse.of(group));
+  }
+
+  async getPopularList(limit?: number): Promise<GroupResponse[]> {
+    const groupList = await this.groupService.getPopularGroup(limit);
 
     return groupList.map((group) => GroupResponse.of(group));
   }

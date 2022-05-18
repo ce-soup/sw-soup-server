@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { MemberResponse } from '@/module/member/dto/response/member.response';
 import { IGroupMember } from '@/module/group/group-member/entities/group-member.entity';
 
@@ -7,8 +9,8 @@ export interface IGroupMemberResponse {
 }
 
 export class GroupMemberResponse implements IGroupMemberResponse {
-  readonly member: MemberResponse;
-  readonly isAccepted: boolean;
+  @ApiProperty() readonly member: MemberResponse;
+  @ApiProperty() readonly isAccepted: boolean;
 
   constructor(member: MemberResponse, isAccepted: boolean) {
     this.member = member;

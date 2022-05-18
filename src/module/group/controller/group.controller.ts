@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -83,6 +84,16 @@ export class GroupController {
     @AuthUser() { memberId }: AuthUserResponse,
   ): Promise<GroupMemberResponse[]> {
     return this.groupFacade.getGroupMember(groupId, memberId);
+  }
+
+  @Get('/popular/list')
+  @ApiOperation({
+    summary: 'PopularGroupList',
+    description: '인기 그룹 리스트를 조회할 수 있어요.',
+  })
+  @ApiOkResponse({ description: 'OK', type: [GroupResponse] })
+  async popularGroupList(@Query('limit') limit?: number) {
+    return this.groupFacade.getPopularList(limit);
   }
 
   @Post('/new')

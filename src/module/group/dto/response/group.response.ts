@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import {
   DayOfTheWeekEnum,
   GroupRecruitmentEnum,
@@ -36,28 +38,28 @@ export interface IGroupResponse {
 }
 
 export class GroupResponse implements IGroupResponse {
-  category: CategoryResponse;
-  createdAt: Date;
-  dayOfTheWeek: DayOfTheWeekEnum[];
-  endDate: Date;
-  endHour: number;
-  endMinute: number;
-  id: string;
-  image: string;
-  isOnline: boolean;
-  manager: MemberResponse;
-  meetingLink: string;
-  name: string;
-  personnel: number;
-  recruitment: GroupRecruitmentEnum;
-  reviews: Review[];
-  scope: GroupScopeEnum;
-  startDate: Date;
-  startHour: number;
-  startMinute: number;
-  status: GroupStatusEnum;
-  type: GroupTypeEnum;
-  views: number;
+  @ApiProperty() category: CategoryResponse;
+  @ApiProperty() createdAt: Date;
+  @ApiProperty() dayOfTheWeek: DayOfTheWeekEnum[];
+  @ApiProperty() endDate: Date;
+  @ApiProperty() endHour: number;
+  @ApiProperty() endMinute: number;
+  @ApiProperty() id: string;
+  @ApiProperty() image: string;
+  @ApiProperty() isOnline: boolean;
+  @ApiProperty() manager: MemberResponse;
+  @ApiProperty() meetingLink: string;
+  @ApiProperty() name: string;
+  @ApiProperty() personnel: number;
+  @ApiProperty() recruitment: GroupRecruitmentEnum;
+  @ApiProperty() reviews: Review[];
+  @ApiProperty() scope: GroupScopeEnum;
+  @ApiProperty() startDate: Date;
+  @ApiProperty() startHour: number;
+  @ApiProperty() startMinute: number;
+  @ApiProperty() status: GroupStatusEnum;
+  @ApiProperty() type: GroupTypeEnum;
+  @ApiProperty() views: number;
 
   constructor(
     category: CategoryResponse,
