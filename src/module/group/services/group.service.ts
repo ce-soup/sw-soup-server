@@ -7,6 +7,8 @@ import { CreateGroupRequest } from '@/module/group/dto/request/create-group.requ
 import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.request';
 import { FilterGroupRequest } from '@/module/group/dto/request/filter-group.request';
 import { GroupScopeEnum } from '../entities/types';
+import { OrderGroupRequest } from '@/module/group/dto/request/order-group.request';
+import { orderFiled } from '@/module/group/order-group-query.decorator';
 
 @Injectable()
 export class GroupService {
@@ -41,13 +43,16 @@ export class GroupService {
     }
   }
 
-  async getByGroupType({
-    groupType,
-    minPersonnel,
-    maxPersonnel,
-    isOnline,
-    status,
-  }: FilterGroupRequest): Promise<Group[]> {
+  async getByGroupType(
+    { order }: OrderGroupRequest,
+    {
+      groupType,
+      minPersonnel,
+      maxPersonnel,
+      isOnline,
+      status,
+    }: FilterGroupRequest,
+  ): Promise<Group[]> {
     try {
       const query = await this.groupRepository
         .createQueryBuilder('group')
@@ -57,6 +62,8 @@ export class GroupService {
         .where('group.scope IN (scope)', {
           scope: [GroupScopeEnum.Public, GroupScopeEnum.Member],
         });
+
+      if (order) query.orderBy(`group.${orderFiled[order]}`, 'DESC');
 
       if (groupType) query.andWhere('group.type = :groupType', { groupType });
       if (minPersonnel)

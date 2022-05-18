@@ -26,6 +26,10 @@ import {
   Role,
 } from '@/module/auth/dto/response/AuthUserResponse';
 import { AuthUser } from '@/module/auth/auth-user.decorators';
+import {
+  OrderGroupEnum,
+  OrderGroupQuery,
+} from '@/module/group/order-group-query.decorator';
 import { FilterGroupQuery } from '@/module/group/filter-group-query.decorator';
 
 import { GroupResponse } from '@/module/group/dto/response/group.response';
@@ -52,6 +56,7 @@ export class GroupController {
   }
 
   @Get('/list/all')
+  @OrderGroupQuery()
   @FilterGroupQuery()
   @ApiOperation({
     summary: 'GetGroups',
@@ -59,19 +64,25 @@ export class GroupController {
   })
   @ApiOkResponse({ description: 'OK', type: [GroupResponse] })
   async getGroups(
+    @Query('order') order?: OrderGroupEnum,
     @Query('type') groupType?: GroupTypeEnum,
     @Query('minPersonnel') minPersonnel?: string,
     @Query('maxPersonnel') maxPersonnel?: string,
     @Query('isOnline') isOnline?: string,
     @Query('status') status?: GroupStatusEnum,
   ): Promise<GroupResponse[]> {
-    return this.groupFacade.getAll({
-      groupType,
-      minPersonnel: minPersonnel ? parseInt(minPersonnel) : undefined,
-      maxPersonnel: maxPersonnel ? parseInt(maxPersonnel) : undefined,
-      isOnline: isOnline ? isOnline === 'true' : undefined,
-      status,
-    });
+    return this.groupFacade.getAll(
+      {
+        order,
+      },
+      {
+        groupType,
+        minPersonnel: minPersonnel ? parseInt(minPersonnel) : undefined,
+        maxPersonnel: maxPersonnel ? parseInt(maxPersonnel) : undefined,
+        isOnline: isOnline ? isOnline === 'true' : undefined,
+        status,
+      },
+    );
   }
 
   @Get('/join/list')

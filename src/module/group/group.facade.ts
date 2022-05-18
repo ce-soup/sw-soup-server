@@ -18,6 +18,7 @@ import { NotGroupManagerException } from '@/module/group/exceptions/not-group-ma
 import { GroupMemberResponse } from '@/module/group/group-member/dto/response/group-member.response';
 import { AvailableManagerRejectException } from '@/module/group/exceptions/available-manager-reject.exception';
 import { FilterGroupRequest } from '@/module/group/dto/request/filter-group.request';
+import { OrderGroupRequest } from '@/module/group/dto/request/order-group.request';
 
 @Injectable()
 export class GroupFacade {
@@ -37,8 +38,11 @@ export class GroupFacade {
     return GroupResponse.of(group);
   }
 
-  async getAll(filter: FilterGroupRequest): Promise<GroupResponse[]> {
-    const groupList = await this.groupService.getByGroupType(filter);
+  async getAll(
+    order: OrderGroupRequest,
+    filter: FilterGroupRequest,
+  ): Promise<GroupResponse[]> {
+    const groupList = await this.groupService.getByGroupType(order, filter);
 
     return groupList.map((group) => GroupResponse.of(group));
   }
