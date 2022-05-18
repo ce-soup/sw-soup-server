@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import {
   ApiConsumes,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { ApiImplicitFile } from '@nestjs/swagger/dist/decorators/api-implicit-file.decorator';
@@ -24,11 +26,16 @@ import {
   Role,
 } from '@/module/auth/dto/response/AuthUserResponse';
 import { AuthUser } from '@/module/auth/auth-user.decorators';
+import {
+  OrderGroupEnum,
+  OrderGroupQuery,
+} from '@/module/group/order-group-query.decorator';
+import { FilterGroupQuery } from '@/module/group/filter-group-query.decorator';
 
 import { GroupResponse } from '@/module/group/dto/response/group.response';
 import { GroupFacade } from '@/module/group/group.facade';
 import { CreateGroupRequest } from '@/module/group/dto/request/create-group.request';
-import { GroupTypeEnum } from '@/module/group/entities/types';
+import { GroupStatusEnum, GroupTypeEnum } from '@/module/group/entities/types';
 import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.request';
 import { GroupMemberResponse } from '@/module/group/group-member/dto/response/group-member.response';
 
@@ -48,16 +55,34 @@ export class GroupController {
     return this.groupFacade.getOne(id);
   }
 
-  @Get('/list/:type')
+  @Get('/list/all')
+  @OrderGroupQuery()
+  @FilterGroupQuery()
   @ApiOperation({
     summary: 'GetGroups',
     description: '그룹 목록을 가져올 수 있어요.',
   })
   @ApiOkResponse({ description: 'OK', type: [GroupResponse] })
   async getGroups(
-    @Param('type') groupType: GroupTypeEnum,
+    @Query('order') order?: OrderGroupEnum,
+    @Query('type') groupType?: GroupTypeEnum,
+    @Query('minPersonnel') minPersonnel?: string,
+    @Query('maxPersonnel') maxPersonnel?: string,
+    @Query('isOnline') isOnline?: string,
+    @Query('status') status?: GroupStatusEnum,
   ): Promise<GroupResponse[]> {
-    return this.groupFacade.getAll(groupType);
+    return this.groupFacade.getAll(
+      {
+        order,
+      },
+      {
+        groupType,
+        minPersonnel: minPersonnel ? parseInt(minPersonnel) : undefined,
+        maxPersonnel: maxPersonnel ? parseInt(maxPersonnel) : undefined,
+        isOnline: isOnline ? isOnline === 'true' : undefined,
+        status,
+      },
+    );
   }
 
   @Get('/join/list')
@@ -83,6 +108,21 @@ export class GroupController {
     @AuthUser() { memberId }: AuthUserResponse,
   ): Promise<GroupMemberResponse[]> {
     return this.groupFacade.getGroupMember(groupId, memberId);
+  }
+
+  @Get('/popular/list')
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'number',
+  })
+  @ApiOperation({
+    summary: 'PopularGroupList',
+    description: '인기 그룹 리스트를 조회할 수 있어요.',
+  })
+  @ApiOkResponse({ description: 'OK', type: [GroupResponse] })
+  async popularGroupList(@Query('limit') limit?: number) {
+    return this.groupFacade.getPopularList(limit);
   }
 
   @Post('/new')
