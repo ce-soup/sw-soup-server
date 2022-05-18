@@ -14,6 +14,7 @@ import {
   ApiConsumes,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { ApiImplicitFile } from '@nestjs/swagger/dist/decorators/api-implicit-file.decorator';
@@ -50,6 +51,11 @@ export class GroupController {
   }
 
   @Get('/list/all')
+  @ApiQuery({
+    name: 'type',
+    required: false,
+    enum: GroupTypeEnum,
+  })
   @ApiOperation({
     summary: 'GetGroups',
     description: '그룹 목록을 가져올 수 있어요.',
@@ -87,6 +93,11 @@ export class GroupController {
   }
 
   @Get('/popular/list')
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'number',
+  })
   @ApiOperation({
     summary: 'PopularGroupList',
     description: '인기 그룹 리스트를 조회할 수 있어요.',
