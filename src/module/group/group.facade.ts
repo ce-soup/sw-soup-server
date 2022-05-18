@@ -6,10 +6,7 @@ import { GroupResponse } from '@/module/group/dto/response/group.response';
 import { Express } from 'express';
 import { FileFacade } from '@/module/file/file.facade';
 import { FileTypes } from '@/module/file/file.contants';
-import {
-  GroupRecruitmentEnum,
-  GroupTypeEnum,
-} from '@/module/group/entities/types';
+import { GroupRecruitmentEnum } from '@/module/group/entities/types';
 import { GroupNotFoundException } from '@/module/group/exceptions/group-not-found.exception';
 import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.request';
 import { UpdatePermissionException } from '@/module/group/exceptions/update-permission.exception';
@@ -20,6 +17,7 @@ import { NotJoinGroupMemberException } from '@/module/group/exceptions/not-join-
 import { NotGroupManagerException } from '@/module/group/exceptions/not-group-manager.exception';
 import { GroupMemberResponse } from '@/module/group/group-member/dto/response/group-member.response';
 import { AvailableManagerRejectException } from '@/module/group/exceptions/available-manager-reject.exception';
+import { FilterGroupRequest } from '@/module/group/dto/request/filter-group.request';
 
 @Injectable()
 export class GroupFacade {
@@ -39,8 +37,8 @@ export class GroupFacade {
     return GroupResponse.of(group);
   }
 
-  async getAll(groupType?: GroupTypeEnum): Promise<GroupResponse[]> {
-    const groupList = await this.groupService.getByGroupType(groupType);
+  async getAll(filter: FilterGroupRequest): Promise<GroupResponse[]> {
+    const groupList = await this.groupService.getByGroupType(filter);
 
     return groupList.map((group) => GroupResponse.of(group));
   }

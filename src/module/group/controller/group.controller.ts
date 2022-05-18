@@ -30,7 +30,7 @@ import { AuthUser } from '@/module/auth/auth-user.decorators';
 import { GroupResponse } from '@/module/group/dto/response/group.response';
 import { GroupFacade } from '@/module/group/group.facade';
 import { CreateGroupRequest } from '@/module/group/dto/request/create-group.request';
-import { GroupTypeEnum } from '@/module/group/entities/types';
+import { GroupStatusEnum, GroupTypeEnum } from '@/module/group/entities/types';
 import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.request';
 import { GroupMemberResponse } from '@/module/group/group-member/dto/response/group-member.response';
 
@@ -56,6 +56,26 @@ export class GroupController {
     required: false,
     enum: GroupTypeEnum,
   })
+  @ApiQuery({
+    name: 'minPersonnel',
+    required: false,
+    type: 'number',
+  })
+  @ApiQuery({
+    name: 'maxPersonnel',
+    required: false,
+    type: 'number',
+  })
+  @ApiQuery({
+    name: 'isOnline',
+    required: false,
+    type: 'boolean',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: GroupStatusEnum,
+  })
   @ApiOperation({
     summary: 'GetGroups',
     description: '그룹 목록을 가져올 수 있어요.',
@@ -63,8 +83,18 @@ export class GroupController {
   @ApiOkResponse({ description: 'OK', type: [GroupResponse] })
   async getGroups(
     @Query('type') groupType?: GroupTypeEnum,
+    @Query('minPersonnel') minPersonnel?: string,
+    @Query('maxPersonnel') maxPersonnel?: string,
+    @Query('isOnline') isOnline?: string,
+    @Query('status') status?: GroupStatusEnum,
   ): Promise<GroupResponse[]> {
-    return this.groupFacade.getAll(groupType);
+    return this.groupFacade.getAll({
+      groupType,
+      minPersonnel: minPersonnel ? parseInt(minPersonnel) : undefined,
+      maxPersonnel: maxPersonnel ? parseInt(maxPersonnel) : undefined,
+      isOnline: isOnline ? isOnline === 'true' : undefined,
+      status,
+    });
   }
 
   @Get('/join/list')

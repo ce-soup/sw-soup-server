@@ -4,8 +4,9 @@ import { In, Repository } from 'typeorm';
 
 import { Group } from '@/module/group/entities/group.entity';
 import { CreateGroupRequest } from '@/module/group/dto/request/create-group.request';
-import { GroupScopeEnum, GroupTypeEnum } from '@/module/group/entities/types';
 import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.request';
+import { FilterGroupRequest } from '@/module/group/dto/request/filter-group.request';
+import { GroupScopeEnum } from '../entities/types';
 
 @Injectable()
 export class GroupService {
@@ -40,15 +41,32 @@ export class GroupService {
     }
   }
 
-  async getByGroupType(groupType?: GroupTypeEnum): Promise<Group[]> {
+  async getByGroupType({
+    groupType,
+    minPersonnel,
+    maxPersonnel,
+    isOnline,
+    status,
+  }: FilterGroupRequest): Promise<Group[]> {
     try {
-      return this.groupRepository.find({
-        where: {
-          ...(groupType ? { type: groupType } : {}),
-          scope: In([GroupScopeEnum.Public, GroupScopeEnum.Member]),
-        },
-        relations: ['image', 'category', 'manager'],
-      });
+      const query = await this.groupRepository
+        .createQueryBuilder('group')
+        .leftJoinAndSelect('group.image', 'image')
+        .leftJoinAndSelect('group.category', 'category')
+        .leftJoinAndSelect('group.manager', 'manager')
+        .where('group.scope IN (scope)', {
+          scope: [GroupScopeEnum.Public, GroupScopeEnum.Member],
+        });
+
+      if (groupType) query.andWhere('group.type = :groupType', { groupType });
+      if (minPersonnel)
+        query.andWhere('group.personnel >= :minPersonnel', { minPersonnel });
+      if (maxPersonnel)
+        query.andWhere('group.personnel <= :maxPersonnel', { maxPersonnel });
+      if (isOnline) query.andWhere('group.isOnline = :isOnline', { isOnline });
+      if (status) query.andWhere('group.status = :status', { status });
+
+      return query.getMany();
     } catch (e) {
       console.group(`[GroupService.getByGroupType]`);
       console.log(e);
