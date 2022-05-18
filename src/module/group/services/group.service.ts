@@ -40,11 +40,11 @@ export class GroupService {
     }
   }
 
-  async getByGroupType(groupType: GroupTypeEnum): Promise<Group[]> {
+  async getByGroupType(groupType?: GroupTypeEnum): Promise<Group[]> {
     try {
       return this.groupRepository.find({
         where: {
-          type: groupType,
+          ...(groupType ? { type: groupType } : {}),
           scope: In([GroupScopeEnum.Public, GroupScopeEnum.Member]),
         },
         relations: ['image', 'category', 'manager'],

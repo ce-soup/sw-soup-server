@@ -39,7 +39,7 @@ export class GroupFacade {
     return GroupResponse.of(group);
   }
 
-  async getAll(groupType: GroupTypeEnum): Promise<GroupResponse[]> {
+  async getAll(groupType?: GroupTypeEnum): Promise<GroupResponse[]> {
     const groupList = await this.groupService.getByGroupType(groupType);
 
     return groupList.map((group) => GroupResponse.of(group));

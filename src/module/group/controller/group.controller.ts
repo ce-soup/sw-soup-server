@@ -49,14 +49,14 @@ export class GroupController {
     return this.groupFacade.getOne(id);
   }
 
-  @Get('/list/:type')
+  @Get('/list/all')
   @ApiOperation({
     summary: 'GetGroups',
     description: '그룹 목록을 가져올 수 있어요.',
   })
   @ApiOkResponse({ description: 'OK', type: [GroupResponse] })
   async getGroups(
-    @Param('type') groupType: GroupTypeEnum,
+    @Query('type') groupType?: GroupTypeEnum,
   ): Promise<GroupResponse[]> {
     return this.groupFacade.getAll(groupType);
   }
