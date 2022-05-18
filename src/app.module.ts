@@ -13,6 +13,7 @@ import { MemberModule } from './module/member/member.module';
 import { GroupModule } from './module/group/group.module';
 import { ReviewModule } from './module/review/review.module';
 import { CategoryModule } from './module/category/category.module';
+import { SearchModule } from './module/search/search.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CategoryModule } from './module/category/category.module';
     GroupModule,
     ReviewModule,
     CategoryModule,
+    SearchModule,
   ],
 })
 export class AppModule {}
