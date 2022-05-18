@@ -26,6 +26,7 @@ import {
   Role,
 } from '@/module/auth/dto/response/AuthUserResponse';
 import { AuthUser } from '@/module/auth/auth-user.decorators';
+import { FilterGroupQuery } from '@/module/group/filter-group-query.decorator';
 
 import { GroupResponse } from '@/module/group/dto/response/group.response';
 import { GroupFacade } from '@/module/group/group.facade';
@@ -51,31 +52,7 @@ export class GroupController {
   }
 
   @Get('/list/all')
-  @ApiQuery({
-    name: 'type',
-    required: false,
-    enum: GroupTypeEnum,
-  })
-  @ApiQuery({
-    name: 'minPersonnel',
-    required: false,
-    type: 'number',
-  })
-  @ApiQuery({
-    name: 'maxPersonnel',
-    required: false,
-    type: 'number',
-  })
-  @ApiQuery({
-    name: 'isOnline',
-    required: false,
-    type: 'boolean',
-  })
-  @ApiQuery({
-    name: 'status',
-    required: false,
-    enum: GroupStatusEnum,
-  })
+  @FilterGroupQuery()
   @ApiOperation({
     summary: 'GetGroups',
     description: '그룹 목록을 가져올 수 있어요.',
