@@ -10,7 +10,6 @@ import { CreateCategoryRequest } from '@/module/category/dto/request/create-cate
 
 @ApiTags('CategoryController')
 @Controller('/api/v1/category')
-@RoleGuard([Role.Admin])
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -23,6 +22,7 @@ export class CategoryController {
     description: 'OK',
     type: [CategoryResponse],
   })
+  @RoleGuard([Role.General])
   async categories(): Promise<CategoryResponse[]> {
     return this.categoryService.getAll();
   }
@@ -36,6 +36,7 @@ export class CategoryController {
     description: 'OK',
     type: CategoryResponse,
   })
+  @RoleGuard([Role.Admin])
   async create(
     @Body() createCategoryRequest: CreateCategoryRequest,
   ): Promise<CategoryResponse> {
