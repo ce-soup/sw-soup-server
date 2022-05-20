@@ -15,6 +15,7 @@ export class Review extends Core implements IReview {
   @JoinColumn({ name: 'writer_id' })
   writer: Member;
 
+  @Column()
   writerId: string;
 
   @Column()

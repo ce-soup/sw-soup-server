@@ -1,5 +1,6 @@
 import { MemberResponse } from '@/module/member/dto/response/member.response';
 import { Review } from '@/module/review/entities/review.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 export interface IReviewResponse {
   id: string;
@@ -10,11 +11,11 @@ export interface IReviewResponse {
 }
 
 export class ReviewResponse implements IReviewResponse {
-  readonly id: string;
-  readonly writer: MemberResponse;
-  readonly content: string;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  @ApiProperty() readonly id: string;
+  @ApiProperty() readonly writer: MemberResponse;
+  @ApiProperty() readonly content: string;
+  @ApiProperty() readonly createdAt: Date;
+  @ApiProperty() readonly updatedAt: Date;
 
   constructor(
     id: string,

@@ -14,6 +14,7 @@ import {
   ApiConsumes,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -38,6 +39,8 @@ import { CreateGroupRequest } from '@/module/group/dto/request/create-group.requ
 import { GroupStatusEnum, GroupTypeEnum } from '@/module/group/entities/types';
 import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.request';
 import { GroupMemberResponse } from '@/module/group/group-member/dto/response/group-member.response';
+import { ReviewResponse } from '@/module/review/dto/response/review.response';
+import { CreateReviewRequest } from '@/module/review/dto/request/create-review.request';
 
 @ApiTags('GroupController')
 @Controller('/api/v1/group')
@@ -230,5 +233,27 @@ export class GroupController {
     @Body() { memberId }: { memberId: string },
   ): Promise<boolean> {
     return this.groupFacade.reject(groupId, managerId, memberId);
+  }
+
+  @Post('/:groupId/review/new')
+  @ApiParam({
+    name: 'groupId',
+    required: true,
+    type: 'string',
+  })
+  @ApiOperation({
+    summary: 'WriteGroupReview',
+    description: '그룹 리뷰를 작성할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: ReviewResponse,
+  })
+  async writeReview(
+    @AuthUser() { memberId }: AuthUserResponse,
+    @Param('groupId') groupId: string,
+    @Body() writeReviewRequest: CreateReviewRequest,
+  ): Promise<ReviewResponse> {
+    return this.groupFacade.writerReview(memberId, groupId, writeReviewRequest);
   }
 }

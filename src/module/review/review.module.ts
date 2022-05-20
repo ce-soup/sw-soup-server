@@ -8,6 +8,6 @@ import { ReviewService } from '@/module/review/services/review.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Review])],
   providers: [ReviewFacade, ReviewService],
-  exports: [ReviewFacade],
+  exports: [ReviewFacade, ReviewService],
 })
 export class ReviewModule {}

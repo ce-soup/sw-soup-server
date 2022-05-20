@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import {
   DayOfTheWeekEnum,
@@ -12,7 +12,6 @@ import { Core } from '@/module/core/core.entity';
 import { Category } from '@/module/category/entities/category.entity';
 import { Member } from '@/module/member/entities/member.entity';
 import { File } from '@/module/file/entities/file.entity';
-import { Review } from '@/module/review/entities/review.entity';
 
 export interface IGroup {
   type: GroupTypeEnum;
@@ -36,7 +35,6 @@ export interface IGroup {
   endMinute?: number;
   dayOfTheWeek: DayOfTheWeekEnum[];
   views: number;
-  reviews: Review[];
   meetingLink?: string;
 }
 
@@ -135,9 +133,6 @@ export class Group extends Core implements IGroup {
   })
   views: number;
 
-  @OneToMany(() => Review, (review) => review.content)
-  reviews: Review[];
-
   @Column({
     nullable: true,
   })
@@ -189,25 +184,25 @@ export class Group extends Core implements IGroup {
   }
 
   static of({
-    type,
-    name,
-    categoryId,
-    imageId,
-    status,
-    managerId,
-    personnel,
-    isOnline,
-    scope,
-    recruitment,
-    startDate,
-    endDate,
-    startHour,
-    startMinute,
-    endHour,
-    endMinute,
-    dayOfTheWeek,
-    meetingLink,
-  }: Partial<Group>): Group {
+              type,
+              name,
+              categoryId,
+              imageId,
+              status,
+              managerId,
+              personnel,
+              isOnline,
+              scope,
+              recruitment,
+              startDate,
+              endDate,
+              startHour,
+              startMinute,
+              endHour,
+              endMinute,
+              dayOfTheWeek,
+              meetingLink,
+            }: Partial<Group>): Group {
     return new Group(
       type,
       name,

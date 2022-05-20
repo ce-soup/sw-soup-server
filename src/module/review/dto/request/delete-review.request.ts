@@ -1,4 +1,4 @@
-export interface IDeleteReviewRequest {
+export interface _IDeleteReviewRequest {
   reviewId: string;
   memberId: string;
 }

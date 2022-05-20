@@ -19,6 +19,9 @@ import { GroupMemberResponse } from '@/module/group/group-member/dto/response/gr
 import { AvailableManagerRejectException } from '@/module/group/exceptions/available-manager-reject.exception';
 import { FilterGroupRequest } from '@/module/group/dto/request/filter-group.request';
 import { OrderGroupRequest } from '@/module/group/dto/request/order-group.request';
+import { ReviewFacade } from '@/module/review/review.facade';
+import { CreateReviewRequest } from '@/module/review/dto/request/create-review.request';
+import { ReviewResponse } from '@/module/review/dto/response/review.response';
 
 @Injectable()
 export class GroupFacade {
@@ -26,6 +29,7 @@ export class GroupFacade {
     private readonly groupService: GroupService,
     private readonly groupMemberService: GroupMemberService,
     private readonly fileFacade: FileFacade,
+    private readonly reviewFacade: ReviewFacade,
   ) {}
 
   async getOne(id: string): Promise<GroupResponse> {
@@ -34,8 +38,9 @@ export class GroupFacade {
     if (!group) {
       throw new GroupNotFoundException();
     }
+    const groupReviews = await this.groupService.getReviewByGroupIds(group.id);
 
-    return GroupResponse.of(group);
+    return GroupResponse.of(group, groupReviews);
   }
 
   async getAll(
@@ -44,13 +49,27 @@ export class GroupFacade {
   ): Promise<GroupResponse[]> {
     const groupList = await this.groupService.getByGroupType(order, filter);
 
-    return groupList.map((group) => GroupResponse.of(group));
+    return Promise.all(
+      groupList.map(async (group) =>
+        GroupResponse.of(
+          group,
+          await this.groupService.getReviewByGroupIds(group.id),
+        ),
+      ),
+    );
   }
 
   async getPopularList(limit?: number): Promise<GroupResponse[]> {
     const groupList = await this.groupService.getPopularGroup(limit);
 
-    return groupList.map((group) => GroupResponse.of(group));
+    return Promise.all(
+      groupList.map(async (group) =>
+        GroupResponse.of(
+          group,
+          await this.groupService.getReviewByGroupIds(group.id),
+        ),
+      ),
+    );
   }
 
   async getJoinedGroup(memberId: string): Promise<GroupResponse[]> {
@@ -60,7 +79,14 @@ export class GroupFacade {
 
     const groupList = await this.groupService.getByIds(groupListIds);
 
-    return groupList.map((group) => GroupResponse.of(group));
+    return Promise.all(
+      groupList.map(async (group) =>
+        GroupResponse.of(
+          group,
+          await this.groupService.getReviewByGroupIds(group.id),
+        ),
+      ),
+    );
   }
 
   async getGroupMember(
@@ -94,8 +120,9 @@ export class GroupFacade {
     );
 
     await this.groupMemberService.join(group.id, managerId, true);
+    const groupReviews = await this.groupService.getReviewByGroupIds(group.id);
 
-    return GroupResponse.of(group);
+    return GroupResponse.of(group, groupReviews);
   }
 
   async update(
@@ -122,7 +149,9 @@ export class GroupFacade {
       newImage ? newImage.id : null,
     );
 
-    return GroupResponse.of(newGroup);
+    const groupReviews = await this.groupService.getReviewByGroupIds(group.id);
+
+    return GroupResponse.of(newGroup, groupReviews);
   }
 
   async delete(groupId: string, memberId: string): Promise<boolean> {
@@ -190,6 +219,21 @@ export class GroupFacade {
     }
 
     return this.groupMemberService.reject(groupId, memberId);
+  }
+
+  async writerReview(
+    memberId: string,
+    groupId: string,
+    request: CreateReviewRequest,
+  ): Promise<ReviewResponse> {
+    const [review, reviewResponse] = await this.reviewFacade.write({
+      writerId: memberId,
+      content: request.content,
+    });
+
+    await this.groupService.addReview(groupId, review.id);
+
+    return reviewResponse;
   }
 
   private async isGroupMember(

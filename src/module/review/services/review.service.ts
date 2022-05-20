@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Review } from '@/module/review/entities/review.entity';
-import { ICreateReviewRequest } from '@/module/review/dto/request/create-review.request';
-import { IUpdateReviewRequest } from '@/module/review/dto/request/update-review.request';
-import { IDeleteReviewRequest } from '@/module/review/dto/request/delete-review.request';
+import { _ICreateReviewRequest } from '@/module/review/dto/request/create-review.request';
+import { _IUpdateReviewRequest } from '@/module/review/dto/request/update-review.request';
+import { _IDeleteReviewRequest } from '@/module/review/dto/request/delete-review.request';
 
 @Injectable()
 export class ReviewService {
@@ -27,7 +27,7 @@ export class ReviewService {
     }
   }
 
-  async write({ writerId, content }: ICreateReviewRequest): Promise<Review> {
+  async write({ writerId, content }: _ICreateReviewRequest): Promise<Review> {
     try {
       const review = await this.reviewRepository.save(
         Review.of({ writerId, content }),
@@ -44,7 +44,7 @@ export class ReviewService {
     }
   }
 
-  async update({ reviewId, content }: IUpdateReviewRequest): Promise<Review> {
+  async update({ reviewId, content }: _IUpdateReviewRequest): Promise<Review> {
     try {
       const review = await this.reviewRepository.findOne({
         where: { id: reviewId },
@@ -64,7 +64,7 @@ export class ReviewService {
     }
   }
 
-  async delete({ reviewId }: IDeleteReviewRequest): Promise<true> {
+  async delete({ reviewId }: _IDeleteReviewRequest): Promise<true> {
     try {
       await this.reviewRepository.delete(reviewId);
 
