@@ -9,12 +9,15 @@ import { FilterGroupRequest } from '@/module/group/dto/request/filter-group.requ
 import { GroupScopeEnum } from '../entities/types';
 import { OrderGroupRequest } from '@/module/group/dto/request/order-group.request';
 import { orderFiled } from '@/module/group/order-group-query.decorator';
+import { GroupReview } from '@/module/group/entities/group-review.entity';
 
 @Injectable()
 export class GroupService {
   constructor(
     @InjectRepository(Group)
     private readonly groupRepository: Repository<Group>,
+    @InjectRepository(GroupReview)
+    private readonly groupReviewRepository: Repository<GroupReview>,
   ) {}
 
   async getById(id: string): Promise<Group> {
@@ -167,6 +170,36 @@ export class GroupService {
       });
     } catch (e) {
       console.group(`[GroupService.update]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
+
+  async getReviewByGroupIds(groupId: string): Promise<GroupReview[]> {
+    try {
+      return this.groupReviewRepository.find({
+        where: { groupId },
+        relations: ['group', 'review'],
+      });
+    } catch (e) {
+      console.group(`[GroupService.getReviewByGroupIds]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
+
+  async addReview(groupId: string, reviewId: string): Promise<GroupReview> {
+    try {
+      const groupReview = await this.groupReviewRepository.save(
+        GroupReview.of({ groupId, reviewId }),
+      );
+
+      return this.groupReviewRepository.findOne({
+        where: { id: groupReview.id },
+        relations: ['group', 'review'],
+      });
+    } catch (e) {
+      console.group(`[GroupService.addReview]`);
       console.log(e);
       console.groupEnd();
     }

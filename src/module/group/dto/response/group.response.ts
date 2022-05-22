@@ -12,6 +12,7 @@ import { Group } from '@/module/group/entities/group.entity';
 import { FileResponse } from '@/module/file/dto/response/file.response';
 import { CategoryResponse } from '@/module/category/dto/response/category.response';
 import { MemberResponse } from '@/module/member/dto/response/member.response';
+import { GroupReview } from '@/module/group/entities/group-review.entity';
 
 export interface IGroupResponse {
   id: string;
@@ -107,29 +108,31 @@ export class GroupResponse implements IGroupResponse {
     this.views = views;
   }
 
-  static of({
-    category,
-    dayOfTheWeek,
-    endDate,
-    endHour,
-    endMinute,
-    id,
-    image,
-    isOnline,
-    manager,
-    meetingLink,
-    name,
-    personnel,
-    recruitment,
-    reviews,
-    scope,
-    startDate,
-    startHour,
-    startMinute,
-    status,
-    type,
-    views,
-  }: Group): GroupResponse {
+  static of(
+    {
+      category,
+      dayOfTheWeek,
+      endDate,
+      endHour,
+      endMinute,
+      id,
+      image,
+      isOnline,
+      manager,
+      meetingLink,
+      name,
+      personnel,
+      recruitment,
+      scope,
+      startDate,
+      startHour,
+      startMinute,
+      status,
+      type,
+      views,
+    }: Group,
+    groupReviews: GroupReview[] = [],
+  ): GroupResponse {
     return new GroupResponse(
       CategoryResponse.of(category),
       dayOfTheWeek,
@@ -144,7 +147,7 @@ export class GroupResponse implements IGroupResponse {
       name,
       personnel,
       recruitment,
-      reviews,
+      groupReviews.map((groupReview) => groupReview.review),
       scope,
       startDate,
       startHour,
