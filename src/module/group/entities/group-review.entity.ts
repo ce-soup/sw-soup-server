@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 import { Core } from '@/module/core/core.entity';
 import { Group } from '@/module/group/entities/group.entity';
@@ -13,17 +13,17 @@ export interface IGroupReview {
 
 @Entity()
 export class GroupReview extends Core implements IGroupReview {
-  @OneToOne(() => Group)
+  @ManyToOne(() => Group)
   @JoinColumn({ name: 'group_id' })
   group: Group;
 
   @Column()
   groupId: string;
 
-  @OneToOne(() => Review)
+  @OneToOne(() => Review, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'review_id' })
   review: Review;
-  
+
   @Column()
   reviewId: string;
 
