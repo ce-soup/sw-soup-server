@@ -10,6 +10,5 @@ export interface _ICreateReviewRequest extends ICreateReviewRequest {
 }
 
 export class CreateReviewRequest implements ICreateReviewRequest {
-  @ApiProperty()
-  readonly content: string;
+  @ApiProperty() readonly content: string;
 }

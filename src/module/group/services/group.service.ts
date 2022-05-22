@@ -190,8 +190,6 @@ export class GroupService {
 
   async addReview(groupId: string, reviewId: string): Promise<GroupReview> {
     try {
-      console.log(groupId, reviewId);
-
       const groupReview = await this.groupReviewRepository.save(
         GroupReview.of({ groupId, reviewId }),
       );

@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export interface IUpdateReviewRequest {
   content: string;
 }
@@ -9,5 +11,5 @@ export interface _IUpdateReviewRequest extends IUpdateReviewRequest {
 }
 
 export class UpdateReviewRequest implements IUpdateReviewRequest {
-  readonly content: string;
+  @ApiProperty() readonly content: string;
 }

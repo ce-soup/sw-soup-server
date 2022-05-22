@@ -41,6 +41,7 @@ import { UpdateGroupRequest } from '@/module/group/dto/request/update-group.requ
 import { GroupMemberResponse } from '@/module/group/group-member/dto/response/group-member.response';
 import { ReviewResponse } from '@/module/review/dto/response/review.response';
 import { CreateReviewRequest } from '@/module/review/dto/request/create-review.request';
+import { UpdateReviewRequest } from '@/module/review/dto/request/update-review.request';
 
 @ApiTags('GroupController')
 @Controller('/api/v1/group')
@@ -255,5 +256,62 @@ export class GroupController {
     @Body() writeReviewRequest: CreateReviewRequest,
   ): Promise<ReviewResponse> {
     return this.groupFacade.writerReview(memberId, groupId, writeReviewRequest);
+  }
+
+  @Patch('/:groupId/review/:reviewId')
+  @ApiParam({
+    name: 'groupId',
+    required: true,
+    type: 'string',
+  })
+  @ApiParam({
+    name: 'reviewId',
+    required: true,
+    type: 'string',
+  })
+  @ApiOperation({
+    summary: 'UpdateGroupReview',
+    description: '그룹 리뷰를 수정할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: ReviewResponse,
+  })
+  async updateReview(
+    @AuthUser() { memberId }: AuthUserResponse,
+    @Param('reviewId') reviewId: string,
+    @Body() updateReviewRequest: UpdateReviewRequest,
+  ): Promise<ReviewResponse> {
+    return this.groupFacade.updateReview(
+      memberId,
+      reviewId,
+      updateReviewRequest,
+    );
+  }
+
+  @Delete('/:groupId/review/:reviewId')
+  @ApiParam({
+    name: 'groupId',
+    required: true,
+    type: 'string',
+  })
+  @ApiParam({
+    name: 'reviewId',
+    required: true,
+    type: 'string',
+  })
+  @ApiOperation({
+    summary: 'DeleteGroupReview',
+    description: '그룹 리뷰를 삭제할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: ReviewResponse,
+  })
+  async deleteReview(
+    @AuthUser() { memberId }: AuthUserResponse,
+    @Param('reviewId') reviewId: string,
+  ): Promise<true> {
+    return this.groupFacade.deleteReview(memberId, reviewId);
   }
 }

@@ -22,6 +22,7 @@ import { OrderGroupRequest } from '@/module/group/dto/request/order-group.reques
 import { ReviewFacade } from '@/module/review/review.facade';
 import { CreateReviewRequest } from '@/module/review/dto/request/create-review.request';
 import { ReviewResponse } from '@/module/review/dto/response/review.response';
+import { UpdateReviewRequest } from '@/module/review/dto/request/update-review.request';
 
 @Injectable()
 export class GroupFacade {
@@ -234,6 +235,27 @@ export class GroupFacade {
     await this.groupService.addReview(groupId, review.id);
 
     return reviewResponse;
+  }
+
+  async updateReview(
+    memberId: string,
+    reviewId: string,
+    request: UpdateReviewRequest,
+  ): Promise<ReviewResponse> {
+    const [_, reviewResponse] = await this.reviewFacade.update({
+      reviewId,
+      writerId: memberId,
+      content: request.content,
+    });
+
+    return reviewResponse;
+  }
+
+  async deleteReview(memberId: string, reviewId: string): Promise<true> {
+    return await this.reviewFacade.delete({
+      reviewId,
+      memberId,
+    });
   }
 
   private async isGroupMember(
