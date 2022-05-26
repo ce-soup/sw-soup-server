@@ -23,6 +23,8 @@ import { ReviewFacade } from '@/module/review/review.facade';
 import { CreateReviewRequest } from '@/module/review/dto/request/create-review.request';
 import { ReviewResponse } from '@/module/review/dto/response/review.response';
 import { UpdateReviewRequest } from '@/module/review/dto/request/update-review.request';
+import { BookmarkService } from '@/module/group/bookmark/services/bookmark.service';
+import { BookmarkRequest } from '@/module/group/bookmark/dto/request/bookmark.request';
 
 @Injectable()
 export class GroupFacade {
@@ -31,6 +33,7 @@ export class GroupFacade {
     private readonly groupMemberService: GroupMemberService,
     private readonly fileFacade: FileFacade,
     private readonly reviewFacade: ReviewFacade,
+    private readonly bookmarkService: BookmarkService,
   ) {}
 
   async getOne(id: string): Promise<GroupResponse> {
@@ -258,6 +261,38 @@ export class GroupFacade {
       reviewId,
       memberId,
     });
+  }
+
+  async getBookmark(memberId: string): Promise<GroupResponse[]> {
+    const bookmarkList = await this.bookmarkService.getByMemberId(memberId);
+
+    return bookmarkList.map((bookmark) => GroupResponse.of(bookmark.group));
+  }
+
+  async addBookmark(
+    { groupId }: BookmarkRequest,
+    memberId: string,
+  ): Promise<GroupResponse> {
+    const group = await this.groupService.getById(groupId);
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+
+    await this.bookmarkService.add(memberId, groupId);
+
+    return GroupResponse.of(group);
+  }
+
+  async deleteBookmark(
+    { groupId }: BookmarkRequest,
+    memberId: string,
+  ): Promise<boolean> {
+    const group = await this.groupService.getById(groupId);
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+
+    return await this.bookmarkService.delete(memberId, groupId);
   }
 
   private async isGroupMember(

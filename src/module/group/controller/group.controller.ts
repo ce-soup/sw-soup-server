@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseInterceptors,
@@ -42,6 +43,7 @@ import { GroupMemberResponse } from '@/module/group/group-member/dto/response/gr
 import { ReviewResponse } from '@/module/review/dto/response/review.response';
 import { CreateReviewRequest } from '@/module/review/dto/request/create-review.request';
 import { UpdateReviewRequest } from '@/module/review/dto/request/update-review.request';
+import { BookmarkRequest } from '@/module/group/bookmark/dto/request/bookmark.request';
 
 @ApiTags('GroupController')
 @Controller('/api/v1/group')
@@ -146,7 +148,7 @@ export class GroupController {
     return this.groupFacade.create(memberId, createGroupRequest, image);
   }
 
-  @Patch(':groupId')
+  @Patch('/:groupId')
   @ApiConsumes('multipart/form-data')
   @ApiOperation({
     summary: 'UpdateGroup',
@@ -306,12 +308,59 @@ export class GroupController {
   })
   @ApiOkResponse({
     description: 'OK',
-    type: ReviewResponse,
+    type: Boolean,
   })
   async deleteReview(
     @AuthUser() { memberId }: AuthUserResponse,
     @Param('reviewId') reviewId: string,
   ): Promise<true> {
     return this.groupFacade.deleteReview(memberId, reviewId);
+  }
+
+  @Get('/bookmark/list')
+  @ApiOperation({
+    summary: 'BookmarkList',
+    description: '북마크를 조회할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: [GroupResponse],
+  })
+  async bookmarkList(
+    @AuthUser() { memberId }: AuthUserResponse,
+  ): Promise<GroupResponse[]> {
+    return this.groupFacade.getBookmark(memberId);
+  }
+
+  @Post('/bookmark')
+  @ApiOperation({
+    summary: 'AddBookmark',
+    description: '북마크를 추가할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: GroupResponse,
+  })
+  async addBookmark(
+    @AuthUser() { memberId }: AuthUserResponse,
+    @Body() bookmarkRequest: BookmarkRequest,
+  ): Promise<GroupResponse> {
+    return this.groupFacade.addBookmark(bookmarkRequest, memberId);
+  }
+
+  @Put('/bookmark')
+  @ApiOperation({
+    summary: 'DeleteBookmark',
+    description: '북마크를 취소할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: Boolean,
+  })
+  async deleteBookmark(
+    @AuthUser() { memberId }: AuthUserResponse,
+    @Body() bookmarkRequest: BookmarkRequest,
+  ): Promise<boolean> {
+    return this.groupFacade.deleteBookmark(bookmarkRequest, memberId);
   }
 }
