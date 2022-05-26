@@ -56,11 +56,15 @@ export class Group extends Core implements IGroup {
   @Column()
   categoryId: string;
 
-  @ManyToOne(() => File, { nullable: true })
+  @ManyToOne(() => File, {
+    nullable: true,
+    cascade: true,
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'image_id' })
   image?: File;
 
-  @Column()
+  @Column({ nullable: true })
   imageId: string;
 
   @Column({
@@ -184,25 +188,25 @@ export class Group extends Core implements IGroup {
   }
 
   static of({
-              type,
-              name,
-              categoryId,
-              imageId,
-              status,
-              managerId,
-              personnel,
-              isOnline,
-              scope,
-              recruitment,
-              startDate,
-              endDate,
-              startHour,
-              startMinute,
-              endHour,
-              endMinute,
-              dayOfTheWeek,
-              meetingLink,
-            }: Partial<Group>): Group {
+    type,
+    name,
+    categoryId,
+    imageId,
+    status,
+    managerId,
+    personnel,
+    isOnline,
+    scope,
+    recruitment,
+    startDate,
+    endDate,
+    startHour,
+    startMinute,
+    endHour,
+    endMinute,
+    dayOfTheWeek,
+    meetingLink,
+  }: Partial<Group>): Group {
     return new Group(
       type,
       name,

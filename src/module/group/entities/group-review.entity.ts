@@ -13,7 +13,7 @@ export interface IGroupReview {
 
 @Entity()
 export class GroupReview extends Core implements IGroupReview {
-  @ManyToOne(() => Group)
+  @ManyToOne(() => Group, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
   @JoinColumn({ name: 'group_id' })
   group: Group;
 

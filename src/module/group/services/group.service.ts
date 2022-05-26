@@ -161,7 +161,6 @@ export class GroupService {
             : request.dayOfTheWeek;
       if (request.meetingLink) group.meetingLink = request.meetingLink;
       if (imageId) group.imageId = imageId;
-
       await this.groupRepository.save(group);
 
       return this.groupRepository.findOne({
