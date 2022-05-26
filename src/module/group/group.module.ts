@@ -11,16 +11,18 @@ import { GroupMemberModule } from '@/module/group/group-member/group-member.modu
 import { FileModule } from '@/module/file/file.module';
 import { ReviewModule } from '@/module/review/review.module';
 import { ReviewFacade } from '@/module/review/review.facade';
+import { BookmarkModule } from '@/module/group/bookmark/bookmark.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Group, GroupReview]),
     GroupMemberModule,
+    BookmarkModule,
     FileModule,
     ReviewModule,
   ],
   controllers: [GroupController],
   providers: [GroupFacade, GroupService, ReviewFacade],
-  exports: [GroupMemberModule],
+  exports: [GroupMemberModule, BookmarkModule],
 })
 export class GroupModule {}
