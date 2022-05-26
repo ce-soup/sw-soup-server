@@ -139,7 +139,7 @@ export class GroupFacade {
 
     const newImage = image
       ? await (async () => {
-          await this.fileFacade.delete(group.imageId);
+          await this.fileFacade.delete(group.image.key);
           return await this.fileFacade.create(FileTypes.Group, image, memberId);
         })()
       : null;
@@ -150,7 +150,9 @@ export class GroupFacade {
       newImage ? newImage.id : null,
     );
 
-    const groupReviews = await this.groupService.getReviewByGroupIds(group.id);
+    const groupReviews = await this.groupService.getReviewByGroupIds(
+      newGroup.id,
+    );
 
     return GroupResponse.of(newGroup, groupReviews);
   }
