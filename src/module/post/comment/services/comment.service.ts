@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Comment } from '@/module/post/comment/entities/comment.entity';
 import { CreateCommentRequest } from '@/module/post/comment/dto/request/create-comment.request';
+import { UpdateCommentRequest } from '@/module/post/comment/dto/request/update-comment.request';
 
 @Injectable()
 export class CommentService {
@@ -11,6 +12,19 @@ export class CommentService {
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
   ) {}
+
+  async getById(commentId: string): Promise<Comment> {
+    try {
+      return this.commentRepository.findOne({
+        where: { id: commentId },
+        relations: ['writer'],
+      });
+    } catch (e) {
+      console.group(`[CommentService.getById]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
 
   async getByPostId(postId: string): Promise<Comment[]> {
     try {
@@ -40,10 +54,7 @@ export class CommentService {
         await this.appendChildren(request.parentId, comment);
       }
 
-      return this.commentRepository.findOne({
-        where: { id: comment.id },
-        relations: ['writer'],
-      });
+      return this.getById(comment.id);
     } catch (e) {
       console.group(`[CommentService.create]`);
       console.log(e);
@@ -51,9 +62,33 @@ export class CommentService {
     }
   }
 
-  async update() {}
+  async update(commentId: string, request: UpdateCommentRequest) {
+    try {
+      const comment = await this.getById(commentId);
+      comment.content = request.content;
+      await this.commentRepository.save(comment);
 
-  async delete() {}
+      return this.getById(comment.id);
+    } catch (e) {
+      console.group(`[CommentService.update]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
+
+  async delete(commentId: string): Promise<boolean> {
+    try {
+      await this.commentRepository.delete(commentId);
+
+      return true;
+    } catch (e) {
+      console.group(`[CommentService.delete]`);
+      console.log(e);
+      console.groupEnd();
+
+      return false;
+    }
+  }
 
   private async appendChildren(
     parentId: string,

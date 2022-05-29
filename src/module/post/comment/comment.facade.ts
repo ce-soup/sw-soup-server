@@ -4,6 +4,8 @@ import { CommentService } from '@/module/post/comment/services/comment.service';
 import { PostFacade } from '@/module/post/post.facade';
 import { CreateCommentRequest } from '@/module/post/comment/dto/request/create-comment.request';
 import { CommentResponse } from '@/module/post/comment/dto/response/comment.response';
+import { UpdateCommentRequest } from '@/module/post/comment/dto/request/update-comment.request';
+import { NotCommentWriterException } from '@/module/post/comment/exceptions/not-comment-writer.exception';
 
 @Injectable()
 export class CommentFacade {
@@ -25,7 +27,40 @@ export class CommentFacade {
     return CommentResponse.of(comment);
   }
 
-  async update() {}
+  async update(
+    memberId: string,
+    groupId: string,
+    postId: string,
+    commentId: string,
+    request: UpdateCommentRequest,
+  ): Promise<CommentResponse> {
+    await this.postFacade.shouldBeExist(groupId, postId);
+    await this.shouldBeWriter(memberId, commentId);
 
-  async delete() {}
+    const comment = await this.commentService.update(commentId, request);
+
+    return CommentResponse.of(comment);
+  }
+
+  async delete(
+    memberId: string,
+    groupId: string,
+    postId: string,
+    commentId: string,
+  ): Promise<boolean> {
+    await this.postFacade.shouldBeExist(groupId, postId);
+    await this.shouldBeWriter(memberId, commentId);
+
+    return this.commentService.delete(commentId);
+  }
+
+  private async shouldBeWriter(
+    memberId: string,
+    commentId: string,
+  ): Promise<void> {
+    const comment = await this.commentService.getById(commentId);
+    if (comment.writerId !== memberId) {
+      throw new NotCommentWriterException();
+    }
+  }
 }

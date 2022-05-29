@@ -250,7 +250,15 @@ export class PostController {
     @Param('commentId') commentId: string,
     @Body() updateCommentRequest: UpdateCommentRequest,
     @AuthUser() { memberId }: AuthUserResponse,
-  ) {}
+  ): Promise<CommentResponse> {
+    return this.commentFacade.update(
+      memberId,
+      groupId,
+      postId,
+      commentId,
+      updateCommentRequest,
+    );
+  }
 
   @Delete('/:groupId/:postId/comment/:commentId')
   @ApiParam({
@@ -281,5 +289,7 @@ export class PostController {
     @Param('postId') postId: string,
     @Param('commentId') commentId: string,
     @AuthUser() { memberId }: AuthUserResponse,
-  ) {}
+  ): Promise<boolean> {
+    return this.commentFacade.delete(memberId, groupId, postId, commentId);
+  }
 }
