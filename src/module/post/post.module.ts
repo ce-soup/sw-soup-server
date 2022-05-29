@@ -8,10 +8,17 @@ import { PostService } from './services/post.service';
 
 import { FileModule } from '@/module/file/file.module';
 import { GroupModule } from '@/module/group/group.module';
+import { CommentModule } from '@/module/post/comment/comment.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post]), FileModule, GroupModule],
+  imports: [
+    TypeOrmModule.forFeature([Post]),
+    CommentModule,
+    FileModule,
+    GroupModule,
+  ],
   providers: [PostFacade, PostService],
   controllers: [PostController],
+  exports: [PostFacade, PostService],
 })
 export class PostModule {}

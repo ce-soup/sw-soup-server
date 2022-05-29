@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { MemberResponse } from '@/module/member/dto/response/member.response';
 import { Post, PostType } from '@/module/post/entities/post.entity';
 import { FileResponse } from '@/module/file/dto/response/file.response';
+import { CommentResponse } from '@/module/post/comment/dto/response/comment.response';
 
 export class PostResponse {
   @ApiProperty() id: string;
@@ -14,6 +15,7 @@ export class PostResponse {
   @ApiProperty() title: string;
   @ApiProperty() content: string;
   @ApiProperty() files?: FileResponse[];
+  @ApiProperty({ nullable: true }) comments?: CommentResponse[];
 
   constructor(
     id: string,
@@ -24,6 +26,7 @@ export class PostResponse {
     title: string,
     content: string,
     files: FileResponse[] = null,
+    comments: CommentResponse[],
   ) {
     this.id = id;
     this.createdAt = createdAt;
@@ -33,10 +36,11 @@ export class PostResponse {
     this.title = title;
     this.content = content;
     this.files = files;
+    this.comments = comments;
   }
 
   static of(
-    { id, createdAt, updatedAt, writer, type, title, content }: Post,
+    { id, createdAt, updatedAt, writer, type, title, content, comments }: Post,
     files: FileResponse[],
   ): PostResponse {
     return new PostResponse(
@@ -48,6 +52,7 @@ export class PostResponse {
       title,
       content,
       files,
+      comments?.map((comment) => CommentResponse.of(comment)),
     );
   }
 }
