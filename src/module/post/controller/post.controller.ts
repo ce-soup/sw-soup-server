@@ -65,8 +65,29 @@ export class PostController {
   }
 
   @Get('/:groupId/:postId')
-  async post(@Param('postId') postId: string) {
-    return this.postFacade.post(postId);
+  @ApiParam({
+    name: 'groupId',
+    type: 'string',
+    required: true,
+  })
+  @ApiParam({
+    name: 'postId',
+    type: 'string',
+    required: true,
+  })
+  @ApiOperation({
+    summary: 'GetPost',
+    description: '글을 조회할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: PostResponse,
+  })
+  async post(
+    @Param('groupId') groupId: string,
+    @Param('postId') postId: string,
+  ): Promise<PostResponse> {
+    return this.postFacade.post(groupId, postId);
   }
 
   @Post('/:groupId/new')

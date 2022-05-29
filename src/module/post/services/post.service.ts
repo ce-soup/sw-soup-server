@@ -55,12 +55,18 @@ export class PostService {
     }
   }
 
-  async getById(postId: string): Promise<Post> {
+  async getById(postId: string, groupId?: string): Promise<Post> {
     try {
-      return this.postRepository.findOne({
-        where: { id: postId },
-        relations: ['writer', 'group'],
-      });
+      let query = await this.postRepository
+        .createQueryBuilder('post')
+        .leftJoinAndSelect('post.writer', 'writer')
+        .leftJoinAndSelect('post.group', 'group')
+        .where('post.id = :postId', { postId });
+
+      if (groupId)
+        query = query.andWhere('post.group_id = :groupId', { groupId });
+
+      return query.getOne();
     } catch (e) {
       console.group(`[PostService.getById]`);
       console.log(e);

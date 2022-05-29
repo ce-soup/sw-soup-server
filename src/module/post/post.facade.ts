@@ -32,8 +32,11 @@ export class PostFacade {
     );
   }
 
-  async post(postId: string) {
-    await this.postService.getById(postId);
+  async post(groupId: string, postId: string): Promise<PostResponse> {
+    const post = await this.postService.getById(postId);
+    const files = await this.fileFacade.findByIds(post.fileIds);
+
+    return PostResponse.of(post, files);
   }
 
   async create(
