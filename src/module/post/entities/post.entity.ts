@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { Core } from '@/module/core/core.entity';
 import { Member } from '@/module/member/entities/member.entity';
 import { Group } from '@/module/group/entities/group.entity';
+import { Comment } from '@/module/post/comment/entities/comment.entity';
 
 export enum PostType {
   General = 'General',
@@ -15,6 +16,7 @@ export interface IPost {
   type: PostType;
   title: string;
   content: string;
+  comments: Comment[];
   fileIds: string[];
 }
 
@@ -42,6 +44,12 @@ export class Post extends Core implements IPost {
 
   @Column()
   content: string;
+
+  @OneToMany(() => Comment, (comment) => comment.post, {
+    cascade: true,
+  })
+  @JoinColumn()
+  comments: Comment[];
 
   @Column({ type: 'text', array: true })
   fileIds: string[];

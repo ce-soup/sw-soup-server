@@ -97,7 +97,7 @@ export class PostService {
     postId: string,
     request: Partial<UpdatePostRequest>,
     fileIds?: string[],
-  ) {
+  ): Promise<Post> {
     try {
       const post = await this.getById(postId);
 
@@ -115,7 +115,7 @@ export class PostService {
     }
   }
 
-  async delete(postId: string) {
+  async delete(postId: string): Promise<boolean> {
     try {
       await this.postRepository.delete(postId);
 

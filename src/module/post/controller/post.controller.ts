@@ -19,6 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
+
 import { AuthUser } from '@/module/auth/auth-user.decorators';
 import { PostFacade } from '@/module/post/post.facade';
 import { CreatePostRequest } from '@/module/post/dto/request/create-post.request';
@@ -30,12 +31,19 @@ import { PostResponse } from '@/module/post/dto/response/post.response';
 import { RoleGuard } from '@/module/auth/role-guard.decorator';
 import { UpdatePostRequest } from '@/module/post/dto/request/update-post.request';
 import { PostType } from '@/module/post/entities/post.entity';
+import { CommentResponse } from '@/module/post/comment/dto/response/comment.response';
+import { CreateCommentRequest } from '@/module/post/comment/dto/request/create-comment.request';
+import { UpdateCommentRequest } from '@/module/post/comment/dto/request/update-comment.request';
+import { CommentFacade } from '@/module/post/comment/comment.facade';
 
 @ApiTags('PostController')
 @Controller('/api/v1/post')
 @RoleGuard([Role.General])
 export class PostController {
-  constructor(private readonly postFacade: PostFacade) {}
+  constructor(
+    private readonly postFacade: PostFacade,
+    private readonly commentFacade: CommentFacade,
+  ) {}
 
   @Get('/:groupId')
   @ApiParam({
@@ -178,4 +186,100 @@ export class PostController {
   ): Promise<boolean> {
     return this.postFacade.delete(memberId, groupId, postId);
   }
+
+  @Post('/:groupId/:postId/comment/new')
+  @ApiParam({
+    name: 'groupId',
+    type: 'string',
+    required: true,
+  })
+  @ApiParam({
+    name: 'postId',
+    type: 'string',
+    required: true,
+  })
+  @ApiOperation({
+    summary: 'CreateComment',
+    description: '댓글을 생성할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: CommentResponse,
+  })
+  async createComment(
+    @Param('groupId') groupId: string,
+    @Param('postId') postId: string,
+    @Body() createCommentRequest: CreateCommentRequest,
+    @AuthUser() { memberId }: AuthUserResponse,
+  ): Promise<CommentResponse> {
+    return this.commentFacade.create(
+      memberId,
+      groupId,
+      postId,
+      createCommentRequest,
+    );
+  }
+
+  @Patch('/:groupId/:postId/comment/:commentId')
+  @ApiParam({
+    name: 'groupId',
+    type: 'string',
+    required: true,
+  })
+  @ApiParam({
+    name: 'postId',
+    type: 'string',
+    required: true,
+  })
+  @ApiParam({
+    name: 'commentId',
+    type: 'string',
+    required: true,
+  })
+  @ApiOperation({
+    summary: 'UpdateComment',
+    description: '댓글을 수정할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: CommentResponse,
+  })
+  async updateComment(
+    @Param('groupId') groupId: string,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @Body() updateCommentRequest: UpdateCommentRequest,
+    @AuthUser() { memberId }: AuthUserResponse,
+  ) {}
+
+  @Delete('/:groupId/:postId/comment/:commentId')
+  @ApiParam({
+    name: 'groupId',
+    type: 'string',
+    required: true,
+  })
+  @ApiParam({
+    name: 'postId',
+    type: 'string',
+    required: true,
+  })
+  @ApiParam({
+    name: 'commentId',
+    type: 'string',
+    required: true,
+  })
+  @ApiOperation({
+    summary: 'DeleteComment',
+    description: '댓글을 삭제할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: Boolean,
+  })
+  async deleteComment(
+    @Param('groupId') groupId: string,
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @AuthUser() { memberId }: AuthUserResponse,
+  ) {}
 }

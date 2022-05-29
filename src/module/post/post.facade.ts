@@ -12,11 +12,13 @@ import { PostType } from '@/module/post/entities/post.entity';
 import { GroupFacade } from '@/module/group/group.facade';
 import { GroupNotFoundException } from '@/module/group/exceptions/group-not-found.exception';
 import { CouldNotCreateNoticeException } from '@/module/post/exceptions/could-not-create-notice.exception';
+import { CommentService } from '@/module/post/comment/services/comment.service';
 
 @Injectable()
 export class PostFacade {
   constructor(
     private readonly postService: PostService,
+    private readonly commentService: CommentService,
     private readonly fileFacade: FileFacade,
     private readonly groupFacade: GroupFacade,
   ) {}
@@ -34,9 +36,10 @@ export class PostFacade {
 
   async post(groupId: string, postId: string): Promise<PostResponse> {
     const post = await this.postService.getById(postId);
+    const comments = await this.commentService.getByPostId(postId);
     const files = await this.fileFacade.findByIds(post.fileIds);
 
-    return PostResponse.of(post, files);
+    return PostResponse.of({ ...post, comments }, files);
   }
 
   async create(
@@ -126,7 +129,13 @@ export class PostFacade {
     return await this.postService.delete(postId);
   }
 
-  private async shouldBePostWriter(
+  async shouldBeExist(groupId: string, postId: string): Promise<void> {
+    if (!(await this.postService.get({ groupId, postId }))) {
+      throw new PostNotFoundException();
+    }
+  }
+
+  async shouldBePostWriter(
     writerId: string,
     groupId: string,
     postId: string,
