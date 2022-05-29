@@ -7,9 +7,10 @@ import { PostFacade } from '@/module/post/post.facade';
 import { PostService } from './services/post.service';
 
 import { FileModule } from '@/module/file/file.module';
+import { GroupModule } from '@/module/group/group.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post]), FileModule],
+  imports: [TypeOrmModule.forFeature([Post]), FileModule, GroupModule],
   providers: [PostFacade, PostService],
   controllers: [PostController],
 })

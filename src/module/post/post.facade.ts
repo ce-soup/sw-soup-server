@@ -8,12 +8,17 @@ import { FileFacade } from '@/module/file/file.facade';
 import { FileTypes } from '@/module/file/file.contants';
 import { UpdatePostRequest } from '@/module/post/dto/request/update-post.request';
 import { PostNotFoundException } from '@/module/post/exceptions/post-not-found.exception';
+import { PostType } from '@/module/post/entities/post.entity';
+import { GroupFacade } from '@/module/group/group.facade';
+import { GroupNotFoundException } from '@/module/group/exceptions/group-not-found.exception';
+import { CouldNotCreateNoticeException } from '@/module/post/exceptions/could-not-create-notice.exception';
 
 @Injectable()
 export class PostFacade {
   constructor(
     private readonly postService: PostService,
     private readonly fileFacade: FileFacade,
+    private readonly groupFacade: GroupFacade,
   ) {}
 
   async posts() {
@@ -30,6 +35,15 @@ export class PostFacade {
     files: Express.Multer.File[],
     { files: _, ...request }: CreatePostRequest,
   ): Promise<PostResponse> {
+    const group = await this.groupFacade.getOne(groupId);
+    if (!group) {
+      throw new GroupNotFoundException();
+    }
+
+    if (request.type === PostType.Notice && writerId !== group.manager.id) {
+      throw new CouldNotCreateNoticeException();
+    }
+
     const fileList = await Promise.all(
       files.map(async (file) => {
         return await this.fileFacade.create(FileTypes.Group, file, writerId);

@@ -23,6 +23,6 @@ import { BookmarkModule } from '@/module/group/bookmark/bookmark.module';
   ],
   controllers: [GroupController],
   providers: [GroupFacade, GroupService, ReviewFacade],
-  exports: [GroupMemberModule, BookmarkModule],
+  exports: [GroupMemberModule, BookmarkModule, GroupFacade],
 })
 export class GroupModule {}
