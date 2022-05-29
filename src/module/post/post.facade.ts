@@ -113,6 +113,13 @@ export class PostFacade {
   ): Promise<boolean> {
     await this.shouldBePostWriter(writerId, groupId, postId);
 
+    const post = await this.postService.getById(postId);
+    await Promise.all(
+      post.fileIds.map(async (fileId) => {
+        await this.fileFacade.deleteById(fileId);
+      }),
+    );
+
     return await this.postService.delete(postId);
   }
 
