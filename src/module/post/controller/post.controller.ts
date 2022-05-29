@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -27,6 +29,7 @@ import {
 import { PostResponse } from '@/module/post/dto/response/post.response';
 import { RoleGuard } from '@/module/auth/role-guard.decorator';
 import { UpdatePostRequest } from '@/module/post/dto/request/update-post.request';
+import { PostType } from '@/module/post/entities/post.entity';
 
 @ApiTags('PostController')
 @Controller('/api/v1/post')
@@ -35,8 +38,30 @@ export class PostController {
   constructor(private readonly postFacade: PostFacade) {}
 
   @Get('/:groupId')
-  async posts() {
-    return this.postFacade.posts();
+  @ApiParam({
+    name: 'groupId',
+    type: 'string',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'postType',
+    type: 'enum',
+    enum: PostType,
+    required: false,
+  })
+  @ApiOperation({
+    summary: 'GetPosts',
+    description: '그룹의 글을 조회할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: [PostResponse],
+  })
+  async posts(
+    @Param('groupId') groupId: string,
+    @Query('postType') postType: PostType,
+  ): Promise<PostResponse[]> {
+    return this.postFacade.posts(groupId, postType);
   }
 
   @Get('/:groupId/:postId')

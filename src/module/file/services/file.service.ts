@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { File } from '@/module/file/entities/file.entity';
 import { FileTypes } from '@/module/file/file.contants';
@@ -14,6 +14,18 @@ export class FileService {
   constructor(
     @InjectRepository(File) private readonly fileRepository: Repository<File>,
   ) {}
+
+  async findByIds(fileIds: string[]): Promise<File[]> {
+    try {
+      return this.fileRepository.find({
+        where: { id: In(fileIds) },
+      });
+    } catch (e) {
+      console.group(`[FileService.findByIds]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
 
   async findById(fileId: string): Promise<File> {
     try {

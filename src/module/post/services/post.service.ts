@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Post } from '@/module/post/entities/post.entity';
+import { Post, PostType } from '@/module/post/entities/post.entity';
 import { CreatePostRequest } from '@/module/post/dto/request/create-post.request';
 import { UpdatePostRequest } from '@/module/post/dto/request/update-post.request';
 
@@ -12,7 +12,24 @@ export class PostService {
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
   ) {}
 
-  async getAll() {}
+  async getAll(groupId: string, postType?: PostType): Promise<Post[]> {
+    try {
+      let query = await this.postRepository
+        .createQueryBuilder('post')
+        .leftJoinAndSelect('post.writer', 'writer')
+        .leftJoinAndSelect('post.group', 'group')
+        .where('post.group_id = :groupId', { groupId });
+
+      if (postType)
+        query = query.andWhere('post.type = :postType', { postType });
+
+      return query.getMany();
+    } catch (e) {
+      console.group(`[PostService.getAll]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
 
   async get({
     writerId,

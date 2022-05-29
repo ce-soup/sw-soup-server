@@ -24,6 +24,11 @@ export class FileFacade {
     return `${prefix}/${id}.${extension}`;
   }
 
+  async findByIds(fileIds: string[]): Promise<FileResponse[]> {
+    const files = await this.fileService.findByIds(fileIds);
+    return files.map((file) => FileResponse.of(file));
+  }
+
   async findById(fileId: string): Promise<FileResponse> {
     return FileResponse.of(await this.fileService.findById(fileId));
   }

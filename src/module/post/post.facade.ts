@@ -21,8 +21,15 @@ export class PostFacade {
     private readonly groupFacade: GroupFacade,
   ) {}
 
-  async posts() {
-    await this.postService.getAll();
+  async posts(groupId: string, postType?: PostType) {
+    const postList = await this.postService.getAll(groupId, postType);
+
+    return Promise.all(
+      postList.map(async (post) => {
+        const fileList = await this.fileFacade.findByIds(post.fileIds);
+        return PostResponse.of(post, fileList);
+      }),
+    );
   }
 
   async post(postId: string) {
