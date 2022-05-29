@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, TreeChildren } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { Core } from '@/module/core/core.entity';
 import { Member } from '@/module/member/entities/member.entity';
@@ -7,7 +7,6 @@ import { Post } from '@/module/post/entities/post.entity';
 export interface IComment {
   writer: Member;
   post: Post;
-  children: Comment[];
   content: string;
 }
 
@@ -26,9 +25,6 @@ export class Comment extends Core implements IComment {
 
   @Column()
   postId: string;
-
-  @TreeChildren()
-  children: Comment[];
 
   @Column()
   content: string;

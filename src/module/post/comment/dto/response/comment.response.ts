@@ -18,14 +18,12 @@ export class CommentResponse {
     updatedAt: Date,
     writer: MemberResponse,
     content: string,
-    children: CommentResponse[],
   ) {
     this.id = id;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.writer = writer;
     this.content = content;
-    this.children = children;
   }
 
   static of({
@@ -34,7 +32,6 @@ export class CommentResponse {
     updatedAt,
     writer,
     content,
-    children,
   }: Comment): CommentResponse {
     return new CommentResponse(
       id,
@@ -42,7 +39,6 @@ export class CommentResponse {
       updatedAt,
       MemberResponse.of(writer),
       content,
-      children?.map((comment) => CommentResponse.of(comment)),
     );
   }
 }

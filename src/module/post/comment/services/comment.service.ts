@@ -47,12 +47,12 @@ export class CommentService {
   ): Promise<Comment> {
     try {
       const comment = await this.commentRepository.save(
-        Comment.of({ writerId: memberId, postId, content: request.content }),
+        Comment.of({
+          writerId: memberId,
+          postId,
+          content: request.content,
+        }),
       );
-
-      if (request.parentId) {
-        await this.appendChildren(request.parentId, comment);
-      }
 
       return this.getById(comment.id);
     } catch (e) {
@@ -87,23 +87,6 @@ export class CommentService {
       console.groupEnd();
 
       return false;
-    }
-  }
-
-  private async appendChildren(
-    parentId: string,
-    child: Comment,
-  ): Promise<void> {
-    try {
-      const parent = await this.commentRepository.findOne({
-        where: { id: parentId },
-      });
-      parent.children.push(child);
-      await this.commentRepository.save(parent);
-    } catch (e) {
-      console.group(`[CommentService.appendChildren]`);
-      console.log(e);
-      console.groupEnd();
     }
   }
 }
