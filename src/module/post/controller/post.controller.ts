@@ -26,6 +26,7 @@ import {
 } from '@/module/auth/dto/response/AuthUserResponse';
 import { PostResponse } from '@/module/post/dto/response/post.response';
 import { RoleGuard } from '@/module/auth/role-guard.decorator';
+import { UpdatePostRequest } from '@/module/post/dto/request/update-post.request';
 
 @ApiTags('PostController')
 @Controller('/api/v1/post')
@@ -65,12 +66,44 @@ export class PostController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body() createPostRequest: CreatePostRequest,
   ): Promise<PostResponse> {
-    return this.postFacade.create(memberId, groupId, createPostRequest, files);
+    return this.postFacade.create(memberId, groupId, files, createPostRequest);
   }
 
   @Patch('/:groupId/:postId')
-  async update() {
-    return this.postFacade.update();
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('files'))
+  @ApiParam({
+    name: 'groupId',
+    type: 'string',
+    required: true,
+  })
+  @ApiParam({
+    name: 'postId',
+    type: 'string',
+    required: true,
+  })
+  @ApiOperation({
+    summary: 'UpdatePost',
+    description: '글을 수정할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: PostResponse,
+  })
+  async update(
+    @Param('groupId') groupId: string,
+    @Param('postId') postId: string,
+    @AuthUser() { memberId }: AuthUserResponse,
+    @UploadedFiles() files: Express.Multer.File[] = [],
+    @Body() updatePostRequest: UpdatePostRequest,
+  ): Promise<PostResponse> {
+    return this.postFacade.update(
+      memberId,
+      groupId,
+      postId,
+      files,
+      updatePostRequest,
+    );
   }
 
   @Delete('/:postId')

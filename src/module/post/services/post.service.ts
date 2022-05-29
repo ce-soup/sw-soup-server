@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Post } from '@/module/post/entities/post.entity';
 import { CreatePostRequest } from '@/module/post/dto/request/create-post.request';
+import { UpdatePostRequest } from '@/module/post/dto/request/update-post.request';
 
 @Injectable()
 export class PostService {
@@ -12,6 +13,30 @@ export class PostService {
   ) {}
 
   async getAll() {}
+
+  async get({
+    writerId,
+    groupId,
+    postId,
+  }: {
+    writerId?: string;
+    groupId?: string;
+    postId?: string;
+  }): Promise<Post> {
+    try {
+      let query = await this.postRepository.createQueryBuilder();
+
+      if (writerId) query = query.where('writer_id = :writerId', { writerId });
+      if (groupId) query = query.andWhere('group_id = :groupId', { groupId });
+      if (postId) query = query.andWhere('id = :postId', { postId });
+
+      return query.getOne();
+    } catch (e) {
+      console.group(`[PostService.get]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
 
   async getById(postId: string): Promise<Post> {
     try {
@@ -45,7 +70,27 @@ export class PostService {
     }
   }
 
-  async update() {}
+  async update(
+    postId: string,
+    request: Partial<UpdatePostRequest>,
+    fileIds?: string[],
+  ) {
+    try {
+      const post = await this.getById(postId);
+
+      if (request.title) post.title = request.title;
+      if (request.content) post.content = request.content;
+      if (fileIds !== null) post.fileIds = fileIds;
+
+      await this.postRepository.save(post);
+
+      return this.getById(postId);
+    } catch (e) {
+      console.group(`[PostService.update]`);
+      console.log(e);
+      console.groupEnd();
+    }
+  }
 
   async delete() {}
 }

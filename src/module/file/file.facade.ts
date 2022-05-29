@@ -9,16 +9,33 @@ import { FileResponse } from '@/module/file/dto/response/file.response';
 
 @Injectable()
 export class FileFacade {
-  constructor(private readonly fileService: FileService, private readonly minioService: MinioService) {}
+  constructor(
+    private readonly fileService: FileService,
+    private readonly minioService: MinioService,
+  ) {}
 
-  private static getFileKey(id: string, fileType: FileTypes, mimeType: string): string {
+  private static getFileKey(
+    id: string,
+    fileType: FileTypes,
+    mimeType: string,
+  ): string {
     const prefix = KeyPrefixes[fileType];
     const extension = getExtension(mimeType);
     return `${prefix}/${id}.${extension}`;
   }
 
-  async findByFileTypeAndMemberId(fileType: FileTypes, memberId: string): Promise<FileResponse | null> {
-    const file = await this.fileService.findByFileTypeAndMemberId(fileType, memberId);
+  async findById(fileId: string): Promise<FileResponse> {
+    return FileResponse.of(await this.fileService.findById(fileId));
+  }
+
+  async findByFileTypeAndMemberId(
+    fileType: FileTypes,
+    memberId: string,
+  ): Promise<FileResponse | null> {
+    const file = await this.fileService.findByFileTypeAndMemberId(
+      fileType,
+      memberId,
+    );
     if (!file) {
       return null;
     }
@@ -26,17 +43,36 @@ export class FileFacade {
     return FileResponse.of(file);
   }
 
-  async create(fileType: FileTypes, file: Express.Multer.File, uploaderId: string): Promise<FileResponse> {
+  async create(
+    fileType: FileTypes,
+    file: Express.Multer.File,
+    uploaderId: string,
+  ): Promise<FileResponse> {
     const id = generateId();
     const fileKey = FileFacade.getFileKey(id, fileType, file.mimetype);
 
     return await Promise.all([
-      await this.fileService.create(fileType, fileKey, file.mimetype, file.originalname, uploaderId),
+      await this.fileService.create(
+        fileType,
+        fileKey,
+        file.mimetype,
+        file.originalname,
+        uploaderId,
+      ),
       await this.minioService.upload(fileKey, file.buffer),
     ]).then((res) => res[0]);
   }
 
+  async deleteById(fileId: string): Promise<void> {
+    const file = await this.fileService.findById(fileId);
+
+    await this.delete(file?.key);
+  }
+
   async delete(key: string): Promise<void> {
-    await Promise.all([await this.fileService.deleteByKey(key), await this.minioService.delete(key)]);
+    await Promise.all([
+      await this.fileService.deleteByKey(key),
+      await this.minioService.delete(key),
+    ]);
   }
 }
