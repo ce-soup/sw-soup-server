@@ -14,6 +14,7 @@ import { GroupModule } from './module/group/group.module';
 import { ReviewModule } from './module/review/review.module';
 import { CategoryModule } from './module/category/category.module';
 import { SearchModule } from './module/search/search.module';
+import { PostModule } from './module/post/post.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SearchModule } from './module/search/search.module';
     ReviewModule,
     CategoryModule,
     SearchModule,
+    PostModule,
   ],
 })
 export class AppModule {}
