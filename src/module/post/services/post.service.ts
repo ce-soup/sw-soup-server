@@ -92,5 +92,16 @@ export class PostService {
     }
   }
 
-  async delete() {}
+  async delete(postId: string) {
+    try {
+      await this.postRepository.delete(postId);
+
+      return true;
+    } catch (e) {
+      console.group(`[PostService.delete]`);
+      console.log(e);
+      console.groupEnd();
+      return false;
+    }
+  }
 }

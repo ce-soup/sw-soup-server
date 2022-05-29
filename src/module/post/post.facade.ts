@@ -85,8 +85,14 @@ export class PostFacade {
     return PostResponse.of(post, fileList);
   }
 
-  async delete() {
-    await this.postService.delete();
+  async delete(
+    writerId: string,
+    groupId: string,
+    postId: string,
+  ): Promise<boolean> {
+    await this.shouldBePostWriter(writerId, groupId, postId);
+
+    return await this.postService.delete(postId);
   }
 
   private async shouldBePostWriter(

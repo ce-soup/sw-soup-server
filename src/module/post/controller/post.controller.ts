@@ -106,8 +106,30 @@ export class PostController {
     );
   }
 
-  @Delete('/:postId')
-  async delete() {
-    return this.postFacade.delete();
+  @Delete('/:groupId/:postId')
+  @ApiParam({
+    name: 'groupId',
+    type: 'string',
+    required: true,
+  })
+  @ApiParam({
+    name: 'postId',
+    type: 'string',
+    required: true,
+  })
+  @ApiOperation({
+    summary: 'DeletePost',
+    description: '글을 삭제할 수 있어요.',
+  })
+  @ApiOkResponse({
+    description: 'OK',
+    type: Boolean,
+  })
+  async delete(
+    @Param('groupId') groupId: string,
+    @Param('postId') postId: string,
+    @AuthUser() { memberId }: AuthUserResponse,
+  ): Promise<boolean> {
+    return this.postFacade.delete(memberId, groupId, postId);
   }
 }
